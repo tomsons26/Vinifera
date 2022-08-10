@@ -27,18 +27,15 @@
  ******************************************************************************/
 #pragma once
 
-#include "extension.h"
-#include "container.h"
-
-#include "ttimer.h"
-#include "ftimer.h"
+#include "objectext.h"
+#include "anim.h"
 
 
 class AnimClass;
 class HouseClass;
 
 
-class AnimClassExtension final : public Extension<AnimClass>
+class AnimClassExtension final : public ObjectClassExtension
 {
     public:
         AnimClassExtension(AnimClass *this_ptr);
@@ -52,8 +49,9 @@ class AnimClassExtension final : public Extension<AnimClass>
         virtual void Detach(TARGET target, bool all = true) override;
         virtual void Compute_CRC(WWCRCEngine &crc) const override;
 
+        virtual AnimClass *This() const override { return reinterpret_cast<AnimClass *>(ObjectClassExtension::This()); }
+
+        virtual ExtensionRTTIType What_Am_I() const override { return EXT_RTTI_ANIM; }
+
     public:
 };
-
-
-extern ExtensionMap<AnimClass, AnimClassExtension> AnimClassExtensions;

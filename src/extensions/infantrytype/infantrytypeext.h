@@ -27,15 +27,11 @@
  ******************************************************************************/
 #pragma once
 
-#include "extension.h"
-#include "container.h"
+#include "technotypeext.h"
+#include "infantrytype.h"
 
 
-class InfantryTypeClass;
-class CCINIClass;
-
-
-class InfantryTypeClassExtension final : public Extension<InfantryTypeClass>
+class InfantryTypeClassExtension final : public TechnoTypeClassExtension
 {
     public:
         InfantryTypeClassExtension(InfantryTypeClass *this_ptr);
@@ -48,8 +44,12 @@ class InfantryTypeClassExtension final : public Extension<InfantryTypeClass>
 
         virtual void Detach(TARGET target, bool all = true) override;
         virtual void Compute_CRC(WWCRCEngine &crc) const override;
+        
+        virtual InfantryTypeClass *This() const override { return reinterpret_cast<InfantryTypeClass *>(TechnoTypeClassExtension::This()); }
 
-        bool Read_INI(CCINIClass &ini);
+        virtual ExtensionRTTIType What_Am_I() const override { return EXT_RTTI_INFANTRYTYPE; }
+
+        virtual bool Read_INI(CCINIClass &ini) override;
 
     public:
         /**
@@ -64,6 +64,3 @@ class InfantryTypeClassExtension final : public Extension<InfantryTypeClass>
          */
         bool IsOmniHealer;
 };
-
-
-extern ExtensionMap<InfantryTypeClass, InfantryTypeClassExtension> InfantryTypeClassExtensions;

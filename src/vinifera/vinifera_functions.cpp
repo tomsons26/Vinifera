@@ -28,6 +28,7 @@
 #include "vinifera_functions.h"
 #include "vinifera_globals.h"
 #include "vinifera_newdel.h"
+#include "tibsun_globals.h"
 #include "cncnet4.h"
 #include "cncnet4_globals.h"
 #include "cncnet5_globals.h"
@@ -47,6 +48,7 @@
 #include "testlocomotion.h"
 #include "theatertype.h"
 #include "debughandler.h"
+#include "asserthandler.h"
 #include <string>
 
 

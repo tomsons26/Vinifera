@@ -27,15 +27,11 @@
  ******************************************************************************/
 #pragma once
 
-#include "extension.h"
-#include "container.h"
+#include "objecttypeext.h"
+#include "bullettype.h"
 
 
-class BulletTypeClass;
-class CCINIClass;
-
-
-class BulletTypeClassExtension final : public Extension<BulletTypeClass>
+class BulletTypeClassExtension final : public ObjectTypeClassExtension
 {
     public:
         BulletTypeClassExtension(BulletTypeClass *this_ptr);
@@ -48,8 +44,12 @@ class BulletTypeClassExtension final : public Extension<BulletTypeClass>
 
         virtual void Detach(TARGET target, bool all = true) override;
         virtual void Compute_CRC(WWCRCEngine &crc) const override;
+        
+        virtual BulletTypeClass *This() const override { return reinterpret_cast<BulletTypeClass *>(ObjectTypeClassExtension::This()); }
 
-        bool Read_INI(CCINIClass &ini);
+        virtual ExtensionRTTIType What_Am_I() const override { return EXT_RTTI_BULLETTYPE; }
+
+        virtual bool Read_INI(CCINIClass &ini) override;
 
     public:
         /**
@@ -57,6 +57,3 @@ class BulletTypeClassExtension final : public Extension<BulletTypeClass>
          */
         unsigned SpawnDelay;
 };
-
-
-extern ExtensionMap<BulletTypeClass, BulletTypeClassExtension> BulletTypeClassExtensions;

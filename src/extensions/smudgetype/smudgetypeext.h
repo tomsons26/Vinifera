@@ -27,15 +27,11 @@
  ******************************************************************************/
 #pragma once
 
-#include "extension.h"
-#include "container.h"
+#include "objecttypeext.h"
+#include "smudgetype.h"
 
 
-class SmudgeTypeClass;
-class CCINIClass;
-
-
-class SmudgeTypeClassExtension final : public Extension<SmudgeTypeClass>
+class SmudgeTypeClassExtension final : public ObjectTypeClassExtension
 {
     public:
         SmudgeTypeClassExtension(SmudgeTypeClass *this_ptr);
@@ -49,11 +45,11 @@ class SmudgeTypeClassExtension final : public Extension<SmudgeTypeClass>
         virtual void Detach(TARGET target, bool all = true) override;
         virtual void Compute_CRC(WWCRCEngine &crc) const override;
 
-        bool Read_INI(CCINIClass &ini);
+        virtual bool Read_INI(CCINIClass &ini) override;
+
+        virtual SmudgeTypeClass *This() const override { return reinterpret_cast<SmudgeTypeClass *>(ObjectTypeClassExtension::This()); }
+
+        virtual ExtensionRTTIType What_Am_I() const override { return EXT_RTTI_SMUDGETYPE; }
 
     public:
-
 };
-
-
-extern ExtensionMap<SmudgeTypeClass, SmudgeTypeClassExtension> SmudgeTypeClassExtensions;

@@ -27,15 +27,11 @@
  ******************************************************************************/
 #pragma once
 
-#include "extension.h"
-#include "container.h"
+#include "abstracttypeext.h"
+#include "objecttype.h"
 
 
-class ObjectTypeClass;
-class CCINIClass;
-
-
-class ObjectTypeClassExtension final : public Extension<ObjectTypeClass>
+class ObjectTypeClassExtension : public AbstractTypeClassExtension
 {
     public:
         ObjectTypeClassExtension(ObjectTypeClass *this_ptr);
@@ -44,16 +40,19 @@ class ObjectTypeClassExtension final : public Extension<ObjectTypeClass>
 
         virtual HRESULT Load(IStream *pStm) override;
         virtual HRESULT Save(IStream *pStm, BOOL fClearDirty) override;
-        virtual int Size_Of() const override;
 
         virtual void Detach(TARGET target, bool all = true) override;
         virtual void Compute_CRC(WWCRCEngine &crc) const override;
 
-        bool Read_INI(CCINIClass &ini);
+        virtual ObjectTypeClass *This() const override { return reinterpret_cast<ObjectTypeClass *>(AbstractTypeClassExtension::This()); }
+
+        virtual const char *Name() const override { return reinterpret_cast<const ObjectTypeClass *>(This())->Name(); }
+        virtual const char *Full_Name() const override { return reinterpret_cast<const ObjectTypeClass *>(This())->Full_Name(); }
+
+        virtual const char *Graphic_Name() const { return reinterpret_cast<const ObjectTypeClass *>(This())->Name(); }
+        virtual const char *Alpha_Graphic_Name() const { return reinterpret_cast<const ObjectTypeClass *>(This())->Full_Name(); }
+
+        virtual bool Read_INI(CCINIClass &ini) override;
 
     public:
-
 };
-
-
-extern ExtensionMap<ObjectTypeClass, ObjectTypeClassExtension> ObjectTypeClassExtensions;

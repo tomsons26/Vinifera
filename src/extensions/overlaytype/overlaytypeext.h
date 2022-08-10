@@ -27,15 +27,11 @@
  ******************************************************************************/
 #pragma once
 
-#include "extension.h"
-#include "container.h"
+#include "objecttypeext.h"
+#include "overlaytype.h"
 
 
-class OverlayTypeClass;
-class CCINIClass;
-
-
-class OverlayTypeClassExtension final : public Extension<OverlayTypeClass>
+class OverlayTypeClassExtension final : public ObjectTypeClassExtension
 {
     public:
         OverlayTypeClassExtension(OverlayTypeClass *this_ptr);
@@ -49,11 +45,11 @@ class OverlayTypeClassExtension final : public Extension<OverlayTypeClass>
         virtual void Detach(TARGET target, bool all = true) override;
         virtual void Compute_CRC(WWCRCEngine &crc) const override;
 
-        bool Read_INI(CCINIClass &ini);
+        virtual bool Read_INI(CCINIClass &ini) override;
+
+        virtual OverlayTypeClass *This() const override { return reinterpret_cast<OverlayTypeClass *>(ObjectTypeClassExtension::This()); }
+
+        virtual ExtensionRTTIType What_Am_I() const override { return EXT_RTTI_INFANTRYTYPE; }
 
     public:
-
 };
-
-
-extern ExtensionMap<OverlayTypeClass, OverlayTypeClassExtension> OverlayTypeClassExtensions;

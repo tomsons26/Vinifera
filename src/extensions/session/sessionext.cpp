@@ -46,11 +46,9 @@ SessionClassExtension *SessionExtension = nullptr;
  *  @author: CCHyper
  */
 SessionClassExtension::SessionClassExtension(SessionClass *this_ptr) :
-    Extension(this_ptr)
+    ExtOptions()
 {
-    ASSERT(ThisPtr != nullptr);
-    //EXT_DEBUG_TRACE("SessionClassExtension constructor - 0x%08X\n", (uintptr_t)(ThisPtr));
-    //EXT_DEBUG_WARNING("SessionClassExtension constructor - 0x%08X\n", (uintptr_t)(ThisPtr));
+    //EXT_DEBUG_TRACE("SessionClassExtension constructor - 0x%08X\n", (uintptr_t)(This()));
 
    /**
      *  Initialises the default game options.
@@ -58,8 +56,6 @@ SessionClassExtension::SessionClassExtension(SessionClass *this_ptr) :
     ExtOptions.IsAutoDeployMCV = false;
     ExtOptions.IsPrePlacedConYards = false;
     ExtOptions.IsBuildOffAlly = true;
-    
-    IsInitialized = true;
 }
 
 
@@ -68,10 +64,8 @@ SessionClassExtension::SessionClassExtension(SessionClass *this_ptr) :
  *  
  *  @author: CCHyper
  */
-SessionClassExtension::SessionClassExtension(const NoInitClass &noinit) :
-    Extension(noinit)
+SessionClassExtension::SessionClassExtension(const NoInitClass &noinit)
 {
-    IsInitialized = false;
 }
 
 
@@ -82,10 +76,19 @@ SessionClassExtension::SessionClassExtension(const NoInitClass &noinit) :
  */
 SessionClassExtension::~SessionClassExtension()
 {
-    //EXT_DEBUG_TRACE("SessionClassExtension destructor - 0x%08X\n", (uintptr_t)(ThisPtr));
-    //EXT_DEBUG_WARNING("SessionClassExtension destructor - 0x%08X\n", (uintptr_t)(ThisPtr));
+    //EXT_DEBUG_TRACE("SessionClassExtension destructor - 0x%08X\n", (uintptr_t)(This()));
+}
 
-    IsInitialized = false;
+
+HRESULT SessionClassExtension::Load(IStream *pStm)
+{
+    return E_NOTIMPL;
+}
+
+
+HRESULT SessionClassExtension::Save(IStream *pStm, BOOL fClearDirty)
+{
+    return E_NOTIMPL;
 }
 
 
@@ -96,10 +99,14 @@ SessionClassExtension::~SessionClassExtension()
  */
 int SessionClassExtension::Size_Of() const
 {
-    ASSERT(ThisPtr != nullptr);
-    //EXT_DEBUG_TRACE("SessionClassExtension::Size_Of - 0x%08X\n", (uintptr_t)(ThisPtr));
+    //EXT_DEBUG_TRACE("SessionClassExtension::Size_Of - 0x%08X\n", (uintptr_t)(This()));
 
     return sizeof(*this);
+}
+
+
+void SessionClassExtension::Compute_CRC(WWCRCEngine &crc) const
+{
 }
 
 
@@ -110,9 +117,7 @@ int SessionClassExtension::Size_Of() const
  */
 void SessionClassExtension::Read_MultiPlayer_Settings()
 {
-    ASSERT(ThisPtr != nullptr);
-    //EXT_DEBUG_TRACE("SessionClassExtension::Read_MultiPlayer_Settings - 0x%08X\n", (uintptr_t)(ThisPtr));
-    //EXT_DEBUG_WARNING("SessionClassExtension::Read_MultiPlayer_Settings - 0x%08X\n", (uintptr_t)(ThisPtr));
+    //EXT_DEBUG_TRACE("SessionClassExtension::Read_MultiPlayer_Settings - 0x%08X\n", (uintptr_t)(This()));
 }
 
 
@@ -123,7 +128,5 @@ void SessionClassExtension::Read_MultiPlayer_Settings()
  */
 void SessionClassExtension::Write_MultiPlayer_Settings()
 {
-    ASSERT(ThisPtr != nullptr);
-    //EXT_DEBUG_TRACE("SessionClassExtension::Write_MultiPlayer_Settings - 0x%08X\n", (uintptr_t)(ThisPtr));
-    //EXT_DEBUG_WARNING("SessionClassExtension::Write_MultiPlayer_Settings - 0x%08X\n", (uintptr_t)(ThisPtr));
+    //EXT_DEBUG_TRACE("SessionClassExtension::Write_MultiPlayer_Settings - 0x%08X\n", (uintptr_t)(This()));
 }

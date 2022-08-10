@@ -27,16 +27,14 @@
  ******************************************************************************/
 #pragma once
 
-#include "extension.h"
-#include "container.h"
+#include "abstracttypeext.h"
+#include "supertype.h"
 
 
-class SuperWeaponTypeClass;
-class CCINIClass;
 class BSurface;
 
 
-class SuperWeaponTypeClassExtension final : public Extension<SuperWeaponTypeClass>
+class SuperWeaponTypeClassExtension final : public AbstractTypeClassExtension
 {
     public:
         SuperWeaponTypeClassExtension(SuperWeaponTypeClass *this_ptr);
@@ -50,7 +48,11 @@ class SuperWeaponTypeClassExtension final : public Extension<SuperWeaponTypeClas
         virtual void Detach(TARGET target, bool all = true) override;
         virtual void Compute_CRC(WWCRCEngine &crc) const override;
 
-        bool Read_INI(CCINIClass &ini);
+        virtual bool Read_INI(CCINIClass &ini) override;
+
+        virtual SuperWeaponTypeClass *This() const override { return reinterpret_cast<SuperWeaponTypeClass *>(AbstractTypeClassExtension::This()); }
+
+        virtual ExtensionRTTIType What_Am_I() const override { return EXT_RTTI_SUPER; }
 
     public:
         /**
@@ -64,6 +66,3 @@ class SuperWeaponTypeClassExtension final : public Extension<SuperWeaponTypeClas
          */
         BSurface *CameoImageSurface;
 };
-
-
-extern ExtensionMap<SuperWeaponTypeClass, SuperWeaponTypeClassExtension> SuperWeaponTypeClassExtensions;

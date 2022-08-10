@@ -33,24 +33,14 @@
 
 
 /**
- *  Provides the map for all HouseTypeClass extension instances.
- */
-ExtensionMap<HouseClass, HouseClassExtension> HouseClassExtensions;
-
-
-/**
  *  Class constructor.
  *  
  *  @author: CCHyper
  */
 HouseClassExtension::HouseClassExtension(HouseClass *this_ptr) :
-    Extension(this_ptr)
+    AbstractClassExtension(this_ptr)
 {
-    ASSERT(ThisPtr != nullptr);
-    //EXT_DEBUG_TRACE("HouseClassExtension constructor - 0x%08X\n", (uintptr_t)(ThisPtr));
-    //EXT_DEBUG_WARNING("HouseClassExtension constructor - 0x%08X\n", (uintptr_t)(ThisPtr));
-
-    IsInitialized = true;
+    //EXT_DEBUG_TRACE("HouseClassExtension constructor - 0x%08X\n", (uintptr_t)(This()));
 }
 
 
@@ -60,9 +50,8 @@ HouseClassExtension::HouseClassExtension(HouseClass *this_ptr) :
  *  @author: CCHyper
  */
 HouseClassExtension::HouseClassExtension(const NoInitClass &noinit) :
-    Extension(noinit)
+    AbstractClassExtension(noinit)
 {
-    IsInitialized = false;
 }
 
 
@@ -73,10 +62,7 @@ HouseClassExtension::HouseClassExtension(const NoInitClass &noinit) :
  */
 HouseClassExtension::~HouseClassExtension()
 {
-    //EXT_DEBUG_TRACE("HouseClassExtension destructor - 0x%08X\n", (uintptr_t)(ThisPtr));
-    //EXT_DEBUG_WARNING("HouseClassExtension destructor - 0x%08X\n", (uintptr_t)(ThisPtr));
-
-    IsInitialized = false;
+    //EXT_DEBUG_TRACE("HouseClassExtension destructor - 0x%08X\n", (uintptr_t)(This()));
 }
 
 
@@ -87,10 +73,9 @@ HouseClassExtension::~HouseClassExtension()
  */
 HRESULT HouseClassExtension::Load(IStream *pStm)
 {
-    ASSERT(ThisPtr != nullptr);
-    //EXT_DEBUG_TRACE("HouseClassExtension::Load - 0x%08X\n", (uintptr_t)(ThisPtr));
+    //EXT_DEBUG_TRACE("HouseClassExtension::Load - 0x%08X\n", (uintptr_t)(This()));
 
-    HRESULT hr = Extension::Load(pStm);
+    HRESULT hr = AbstractClassExtension::Load(pStm);
     if (FAILED(hr)) {
         return E_FAIL;
     }
@@ -108,10 +93,9 @@ HRESULT HouseClassExtension::Load(IStream *pStm)
  */
 HRESULT HouseClassExtension::Save(IStream *pStm, BOOL fClearDirty)
 {
-    ASSERT(ThisPtr != nullptr);
-    //EXT_DEBUG_TRACE("HouseClassExtension::Save - 0x%08X\n", (uintptr_t)(ThisPtr));
+    //EXT_DEBUG_TRACE("HouseClassExtension::Save - 0x%08X\n", (uintptr_t)(This()));
 
-    HRESULT hr = Extension::Save(pStm, fClearDirty);
+    HRESULT hr = AbstractClassExtension::Save(pStm, fClearDirty);
     if (FAILED(hr)) {
         return hr;
     }
@@ -127,8 +111,7 @@ HRESULT HouseClassExtension::Save(IStream *pStm, BOOL fClearDirty)
  */
 int HouseClassExtension::Size_Of() const
 {
-    ASSERT(ThisPtr != nullptr);
-    //EXT_DEBUG_TRACE("HouseClassExtension::Size_Of - 0x%08X\n", (uintptr_t)(ThisPtr));
+    //EXT_DEBUG_TRACE("HouseClassExtension::Size_Of - 0x%08X\n", (uintptr_t)(This()));
 
     return sizeof(*this);
 }
@@ -141,8 +124,7 @@ int HouseClassExtension::Size_Of() const
  */
 void HouseClassExtension::Detach(TARGET target, bool all)
 {
-    ASSERT(ThisPtr != nullptr);
-    //EXT_DEBUG_TRACE("HouseClassExtension::Detach - 0x%08X\n", (uintptr_t)(ThisPtr));
+    //EXT_DEBUG_TRACE("HouseClassExtension::Detach - 0x%08X\n", (uintptr_t)(This()));
 }
 
 
@@ -153,6 +135,5 @@ void HouseClassExtension::Detach(TARGET target, bool all)
  */
 void HouseClassExtension::Compute_CRC(WWCRCEngine &crc) const
 {
-    ASSERT(ThisPtr != nullptr);
-    //EXT_DEBUG_TRACE("HouseClassExtension::Compute_CRC - 0x%08X\n", (uintptr_t)(ThisPtr));
+    //EXT_DEBUG_TRACE("HouseClassExtension::Compute_CRC - 0x%08X\n", (uintptr_t)(This()));
 }

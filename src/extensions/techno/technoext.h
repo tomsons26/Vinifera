@@ -27,15 +27,13 @@
  ******************************************************************************/
 #pragma once
 
-#include "extension.h"
-#include "container.h"
-#include "techno.h"
+#include "objectext.h"
 
 
 class EBoltClass;
 
 
-class TechnoClassExtension final : public Extension<TechnoClass>
+class TechnoClassExtension : public ObjectClassExtension
 {
     public:
         TechnoClassExtension(TechnoClass *this_ptr);
@@ -44,7 +42,6 @@ class TechnoClassExtension final : public Extension<TechnoClass>
 
         virtual HRESULT Load(IStream *pStm) override;
         virtual HRESULT Save(IStream *pStm, BOOL fClearDirty) override;
-        virtual int Size_Of() const override;
 
         virtual void Detach(TARGET target, bool all = true) override;
         virtual void Compute_CRC(WWCRCEngine &crc) const override;
@@ -58,12 +55,12 @@ class TechnoClassExtension final : public Extension<TechnoClass>
         void Response_Harvest();
         bool Can_Passive_Acquire() const;
 
+    private:
+        const TechnoTypeClass *Techno_Type_Class() const;
+
     public:
         /**
          *  The current electric bolt instance fired by this object.
          */
         EBoltClass *ElectricBolt;
 };
-
-
-extern ExtensionMap<TechnoClass, TechnoClassExtension> TechnoClassExtensions;

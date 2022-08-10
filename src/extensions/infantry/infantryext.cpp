@@ -33,24 +33,14 @@
 
 
 /**
- *  Provides the map for all InfantryClass extension instances.
- */
-ExtensionMap<InfantryClass, InfantryClassExtension> InfantryClassExtensions;
-
-
-/**
  *  Class constructor.
  *  
  *  @author: CCHyper
  */
 InfantryClassExtension::InfantryClassExtension(InfantryClass *this_ptr) :
-    Extension(this_ptr)
+    FootClassExtension(this_ptr)
 {
-    ASSERT(ThisPtr != nullptr);
-    //EXT_DEBUG_TRACE("InfantryClassExtension constructor - Name: %s (0x%08X)\n", ThisPtr->Name(), (uintptr_t)(ThisPtr));
-    //EXT_DEBUG_WARNING("InfantryClassExtension constructor - Name: %s (0x%08X)\n", ThisPtr->Name(), (uintptr_t)(ThisPtr));
-
-    IsInitialized = true;
+    //EXT_DEBUG_TRACE("InfantryClassExtension constructor - Name: %s (0x%08X)\n", Name(), (uintptr_t)(This()));
 }
 
 
@@ -60,9 +50,8 @@ InfantryClassExtension::InfantryClassExtension(InfantryClass *this_ptr) :
  *  @author: CCHyper
  */
 InfantryClassExtension::InfantryClassExtension(const NoInitClass &noinit) :
-    Extension(noinit)
+    FootClassExtension(noinit)
 {
-    IsInitialized = false;
 }
 
 
@@ -73,10 +62,7 @@ InfantryClassExtension::InfantryClassExtension(const NoInitClass &noinit) :
  */
 InfantryClassExtension::~InfantryClassExtension()
 {
-    //EXT_DEBUG_TRACE("InfantryClassExtension destructor - Name: %s (0x%08X)\n", ThisPtr->Name(), (uintptr_t)(ThisPtr));
-    //EXT_DEBUG_WARNING("InfantryClassExtension destructor - Name: %s (0x%08X)\n", ThisPtr->Name(), (uintptr_t)(ThisPtr));
-
-    IsInitialized = false;
+    //EXT_DEBUG_TRACE("InfantryClassExtension destructor - Name: %s (0x%08X)\n", Name(), (uintptr_t)(This()));
 }
 
 
@@ -87,10 +73,9 @@ InfantryClassExtension::~InfantryClassExtension()
  */
 HRESULT InfantryClassExtension::Load(IStream *pStm)
 {
-    ASSERT(ThisPtr != nullptr);
-    //EXT_DEBUG_TRACE("InfantryClassExtension::Size_Of - Name: %s (0x%08X)\n", ThisPtr->Name(), (uintptr_t)(ThisPtr));
+    //EXT_DEBUG_TRACE("InfantryClassExtension::Size_Of - Name: %s (0x%08X)\n", Name(), (uintptr_t)(This()));
 
-    HRESULT hr = Extension::Load(pStm);
+    HRESULT hr = FootClassExtension::Load(pStm);
     if (FAILED(hr)) {
         return E_FAIL;
     }
@@ -108,10 +93,9 @@ HRESULT InfantryClassExtension::Load(IStream *pStm)
  */
 HRESULT InfantryClassExtension::Save(IStream *pStm, BOOL fClearDirty)
 {
-    ASSERT(ThisPtr != nullptr);
-    //EXT_DEBUG_TRACE("InfantryClassExtension::Size_Of - Name: %s (0x%08X)\n", ThisPtr->Name(), (uintptr_t)(ThisPtr));
+    //EXT_DEBUG_TRACE("InfantryClassExtension::Size_Of - Name: %s (0x%08X)\n", Name(), (uintptr_t)(This()));
 
-    HRESULT hr = Extension::Save(pStm, fClearDirty);
+    HRESULT hr = FootClassExtension::Save(pStm, fClearDirty);
     if (FAILED(hr)) {
         return hr;
     }
@@ -127,8 +111,7 @@ HRESULT InfantryClassExtension::Save(IStream *pStm, BOOL fClearDirty)
  */
 int InfantryClassExtension::Size_Of() const
 {
-    ASSERT(ThisPtr != nullptr);
-    //EXT_DEBUG_TRACE("InfantryClassExtension::Size_Of - Name: %s (0x%08X)\n", ThisPtr->Name(), (uintptr_t)(ThisPtr));
+    //EXT_DEBUG_TRACE("InfantryClassExtension::Size_Of - Name: %s (0x%08X)\n", Name(), (uintptr_t)(This()));
 
     return sizeof(*this);
 }
@@ -141,8 +124,7 @@ int InfantryClassExtension::Size_Of() const
  */
 void InfantryClassExtension::Detach(TARGET target, bool all)
 {
-    ASSERT(ThisPtr != nullptr);
-    //EXT_DEBUG_TRACE("InfantryClassExtension::Detach - Name: %s (0x%08X)\n", ThisPtr->Name(), (uintptr_t)(ThisPtr));
+    //EXT_DEBUG_TRACE("InfantryClassExtension::Detach - Name: %s (0x%08X)\n", Name(), (uintptr_t)(This()));
 }
 
 
@@ -153,6 +135,5 @@ void InfantryClassExtension::Detach(TARGET target, bool all)
  */
 void InfantryClassExtension::Compute_CRC(WWCRCEngine &crc) const
 {
-    ASSERT(ThisPtr != nullptr);
-    //EXT_DEBUG_TRACE("InfantryClassExtension::Compute_CRC - Name: %s (0x%08X)\n", ThisPtr->Name(), (uintptr_t)(ThisPtr));
+    //EXT_DEBUG_TRACE("InfantryClassExtension::Compute_CRC - Name: %s (0x%08X)\n", Name(), (uintptr_t)(This()));
 }

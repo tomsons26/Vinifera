@@ -33,26 +33,16 @@
 
 
 /**
- *  Provides the map for all SuperClass extension instances.
- */
-ExtensionMap<SuperClass, SuperClassExtension> SuperClassExtensions;
-
-
-/**
  *  Class constructor.
  *  
  *  @author: CCHyper
  */
 SuperClassExtension::SuperClassExtension(SuperClass *this_ptr) :
-    Extension(this_ptr),
+    AbstractClassExtension(this_ptr),
     FlashTimeEnd(0),
     TimerFlashState(false)
 {
-    ASSERT(ThisPtr != nullptr);
-    //EXT_DEBUG_TRACE("SuperClassExtension constructor - Name: %s (0x%08X)\n", ThisPtr->Name(), (uintptr_t)(ThisPtr));
-    //EXT_DEBUG_WARNING("SuperClassExtension constructor - Name: %s (0x%08X)\n", ThisPtr->Name(), (uintptr_t)(ThisPtr));
-
-    IsInitialized = true;
+    //EXT_DEBUG_TRACE("SuperClassExtension constructor - Name: %s (0x%08X)\n", Name(), (uintptr_t)(This()));
 }
 
 
@@ -62,9 +52,8 @@ SuperClassExtension::SuperClassExtension(SuperClass *this_ptr) :
  *  @author: CCHyper
  */
 SuperClassExtension::SuperClassExtension(const NoInitClass &noinit) :
-    Extension(noinit)
+    AbstractClassExtension(noinit)
 {
-    IsInitialized = false;
 }
 
 
@@ -75,10 +64,7 @@ SuperClassExtension::SuperClassExtension(const NoInitClass &noinit) :
  */
 SuperClassExtension::~SuperClassExtension()
 {
-    //EXT_DEBUG_TRACE("SuperClassExtension destructor - Name: %s (0x%08X)\n", ThisPtr->Name(), (uintptr_t)(ThisPtr));
-    //EXT_DEBUG_WARNING("SuperClassExtension destructor - Name: %s (0x%08X)\n", ThisPtr->Name(), (uintptr_t)(ThisPtr));
-
-    IsInitialized = false;
+    //EXT_DEBUG_TRACE("SuperClassExtension destructor - Name: %s (0x%08X)\n", Name(), (uintptr_t)(This()));
 }
 
 
@@ -89,10 +75,9 @@ SuperClassExtension::~SuperClassExtension()
  */
 HRESULT SuperClassExtension::Load(IStream *pStm)
 {
-    ASSERT(ThisPtr != nullptr);
-    //EXT_DEBUG_TRACE("SuperClassExtension::Size_Of - Name: %s (0x%08X)\n", ThisPtr->Name(), (uintptr_t)(ThisPtr));
+    //EXT_DEBUG_TRACE("SuperClassExtension::Size_Of - Name: %s (0x%08X)\n", Name(), (uintptr_t)(This()));
 
-    HRESULT hr = Extension::Load(pStm);
+    HRESULT hr = AbstractClassExtension::Load(pStm);
     if (FAILED(hr)) {
         return E_FAIL;
     }
@@ -110,10 +95,9 @@ HRESULT SuperClassExtension::Load(IStream *pStm)
  */
 HRESULT SuperClassExtension::Save(IStream *pStm, BOOL fClearDirty)
 {
-    ASSERT(ThisPtr != nullptr);
-    //EXT_DEBUG_TRACE("SuperClassExtension::Size_Of - Name: %s (0x%08X)\n", ThisPtr->Name(), (uintptr_t)(ThisPtr));
+    //EXT_DEBUG_TRACE("SuperClassExtension::Size_Of - Name: %s (0x%08X)\n", Name(), (uintptr_t)(This()));
 
-    HRESULT hr = Extension::Save(pStm, fClearDirty);
+    HRESULT hr = AbstractClassExtension::Save(pStm, fClearDirty);
     if (FAILED(hr)) {
         return hr;
     }
@@ -129,8 +113,7 @@ HRESULT SuperClassExtension::Save(IStream *pStm, BOOL fClearDirty)
  */
 int SuperClassExtension::Size_Of() const
 {
-    ASSERT(ThisPtr != nullptr);
-    //EXT_DEBUG_TRACE("SuperClassExtension::Size_Of - Name: %s (0x%08X)\n", ThisPtr->Name(), (uintptr_t)(ThisPtr));
+    //EXT_DEBUG_TRACE("SuperClassExtension::Size_Of - Name: %s (0x%08X)\n", Name(), (uintptr_t)(This()));
 
     return sizeof(*this);
 }
@@ -143,8 +126,7 @@ int SuperClassExtension::Size_Of() const
  */
 void SuperClassExtension::Detach(TARGET target, bool all)
 {
-    ASSERT(ThisPtr != nullptr);
-    //EXT_DEBUG_TRACE("SuperClassExtension::Detach - Name: %s (0x%08X)\n", ThisPtr->Name(), (uintptr_t)(ThisPtr));
+    //EXT_DEBUG_TRACE("SuperClassExtension::Detach - Name: %s (0x%08X)\n", Name(), (uintptr_t)(This()));
 }
 
 
@@ -155,6 +137,5 @@ void SuperClassExtension::Detach(TARGET target, bool all)
  */
 void SuperClassExtension::Compute_CRC(WWCRCEngine &crc) const
 {
-    ASSERT(ThisPtr != nullptr);
-    //EXT_DEBUG_TRACE("SuperClassExtension::Compute_CRC - Name: %s (0x%08X)\n", ThisPtr->Name(), (uintptr_t)(ThisPtr));
+    //EXT_DEBUG_TRACE("SuperClassExtension::Compute_CRC - Name: %s (0x%08X)\n", Name(), (uintptr_t)(This()));
 }

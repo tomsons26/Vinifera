@@ -27,15 +27,11 @@
  ******************************************************************************/
 #pragma once
 
-#include "extension.h"
-#include "container.h"
+#include "technotypeext.h"
+#include "aircrafttype.h"
 
 
-class AircraftTypeClass;
-class CCINIClass;
-
-
-class AircraftTypeClassExtension final : public Extension<AircraftTypeClass>
+class AircraftTypeClassExtension final : public TechnoTypeClassExtension
 {
     public:
         AircraftTypeClassExtension(AircraftTypeClass *this_ptr);
@@ -48,12 +44,12 @@ class AircraftTypeClassExtension final : public Extension<AircraftTypeClass>
 
         virtual void Detach(TARGET target, bool all = true) override;
         virtual void Compute_CRC(WWCRCEngine &crc) const override;
+        
+        virtual AircraftTypeClass *This() const override { return reinterpret_cast<AircraftTypeClass *>(TechnoTypeClassExtension::This()); }
 
-        bool Read_INI(CCINIClass &ini);
+        virtual ExtensionRTTIType What_Am_I() const override { return EXT_RTTI_AIRCRAFTTYPE; }
+
+        virtual bool Read_INI(CCINIClass &ini) override;
 
     public:
-
 };
-
-
-extern ExtensionMap<AircraftTypeClass, AircraftTypeClassExtension> AircraftTypeClassExtensions;

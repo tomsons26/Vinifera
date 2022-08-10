@@ -28,14 +28,9 @@
 #include "campaignext.h"
 #include "campaign.h"
 #include "ccini.h"
+#include "extension.h"
 #include "asserthandler.h"
 #include "debughandler.h"
-
-
-/**
- *  Provides the map for all CampaignClass extension instances.
- */
-ExtensionMap<CampaignClass, CampaignClassExtension> CampaignClassExtensions;
 
 
 /**
@@ -44,15 +39,11 @@ ExtensionMap<CampaignClass, CampaignClassExtension> CampaignClassExtensions;
  *  @author: CCHyper
  */
 CampaignClassExtension::CampaignClassExtension(CampaignClass *this_ptr) :
-    Extension(this_ptr),
+    AbstractTypeClassExtension(this_ptr),
     IsDebugOnly(false),
     IntroMovie()
 {
-    ASSERT(ThisPtr != nullptr);
-    //EXT_DEBUG_TRACE("CampaignClassExtension constructor - Name: %s (0x%08X)\n", ThisPtr->Name(), (uintptr_t)(ThisPtr));
-    //EXT_DEBUG_WARNING("CampaignClassExtension constructor - Name: %s (0x%08X)\n", ThisPtr->Name(), (uintptr_t)(ThisPtr));
-
-    IsInitialized = true;
+    //EXT_DEBUG_TRACE("CampaignClassExtension constructor - Name: %s (0x%08X)\n", Name(), (uintptr_t)(This()));
 }
 
 
@@ -62,9 +53,8 @@ CampaignClassExtension::CampaignClassExtension(CampaignClass *this_ptr) :
  *  @author: CCHyper
  */
 CampaignClassExtension::CampaignClassExtension(const NoInitClass &noinit) :
-    Extension(noinit)
+    AbstractTypeClassExtension(noinit)
 {
-    IsInitialized = false;
 }
 
 
@@ -75,10 +65,7 @@ CampaignClassExtension::CampaignClassExtension(const NoInitClass &noinit) :
  */
 CampaignClassExtension::~CampaignClassExtension()
 {
-    //EXT_DEBUG_TRACE("CampaignClassExtension destructor - Name: %s (0x%08X)\n", ThisPtr->Name(), (uintptr_t)(ThisPtr));
-    //EXT_DEBUG_WARNING("CampaignClassExtension destructor - Name: %s (0x%08X)\n", ThisPtr->Name(), (uintptr_t)(ThisPtr));
-
-    IsInitialized = false;
+    //EXT_DEBUG_TRACE("CampaignClassExtension destructor - Name: %s (0x%08X)\n", Name(), (uintptr_t)(This()));
 }
 
 
@@ -89,10 +76,9 @@ CampaignClassExtension::~CampaignClassExtension()
  */
 HRESULT CampaignClassExtension::Load(IStream *pStm)
 {
-    ASSERT(ThisPtr != nullptr);
-    //EXT_DEBUG_TRACE("CampaignClassExtension::Size_Of - Name: %s (0x%08X)\n", ThisPtr->Name(), (uintptr_t)(ThisPtr));
+    //EXT_DEBUG_TRACE("CampaignClassExtension::Size_Of - Name: %s (0x%08X)\n", Name(), (uintptr_t)(This()));
 
-    HRESULT hr = Extension::Load(pStm);
+    HRESULT hr = AbstractTypeClassExtension::Load(pStm);
     if (FAILED(hr)) {
         return E_FAIL;
     }
@@ -110,10 +96,9 @@ HRESULT CampaignClassExtension::Load(IStream *pStm)
  */
 HRESULT CampaignClassExtension::Save(IStream *pStm, BOOL fClearDirty)
 {
-    ASSERT(ThisPtr != nullptr);
-    //EXT_DEBUG_TRACE("CampaignClassExtension::Size_Of - Name: %s (0x%08X)\n", ThisPtr->Name(), (uintptr_t)(ThisPtr));
+    //EXT_DEBUG_TRACE("CampaignClassExtension::Size_Of - Name: %s (0x%08X)\n", Name(), (uintptr_t)(This()));
 
-    HRESULT hr = Extension::Save(pStm, fClearDirty);
+    HRESULT hr = AbstractTypeClassExtension::Save(pStm, fClearDirty);
     if (FAILED(hr)) {
         return hr;
     }
@@ -129,8 +114,7 @@ HRESULT CampaignClassExtension::Save(IStream *pStm, BOOL fClearDirty)
  */
 int CampaignClassExtension::Size_Of() const
 {
-    ASSERT(ThisPtr != nullptr);
-    //EXT_DEBUG_TRACE("CampaignClassExtension::Size_Of - Name: %s (0x%08X)\n", ThisPtr->Name(), (uintptr_t)(ThisPtr));
+    //EXT_DEBUG_TRACE("CampaignClassExtension::Size_Of - Name: %s (0x%08X)\n", Name(), (uintptr_t)(This()));
 
     return sizeof(*this);
 }
@@ -143,8 +127,7 @@ int CampaignClassExtension::Size_Of() const
  */
 void CampaignClassExtension::Detach(TARGET target, bool all)
 {
-    ASSERT(ThisPtr != nullptr);
-    //EXT_DEBUG_TRACE("CampaignClassExtension::Detach - Name: %s (0x%08X)\n", ThisPtr->Name(), (uintptr_t)(ThisPtr));
+    //EXT_DEBUG_TRACE("CampaignClassExtension::Detach - Name: %s (0x%08X)\n", Name(), (uintptr_t)(This()));
 }
 
 
@@ -155,8 +138,7 @@ void CampaignClassExtension::Detach(TARGET target, bool all)
  */
 void CampaignClassExtension::Compute_CRC(WWCRCEngine &crc) const
 {
-    ASSERT(ThisPtr != nullptr);
-    //EXT_DEBUG_TRACE("CampaignClassExtension::Compute_CRC - Name: %s (0x%08X)\n", ThisPtr->Name(), (uintptr_t)(ThisPtr));
+    //EXT_DEBUG_TRACE("CampaignClassExtension::Compute_CRC - Name: %s (0x%08X)\n", Name(), (uintptr_t)(This()));
 }
 
 
@@ -167,15 +149,13 @@ void CampaignClassExtension::Compute_CRC(WWCRCEngine &crc) const
  */
 bool CampaignClassExtension::Read_INI(CCINIClass &ini)
 {
-    ASSERT(ThisPtr != nullptr);
-    //EXT_DEBUG_TRACE("CampaignClassExtension::Read_INI - Name: %s (0x%08X)\n", ThisPtr->Name(), (uintptr_t)(ThisPtr));
-    EXT_DEBUG_WARNING("CampaignClassExtension::Read_INI - Name: %s (0x%08X)\n", ThisPtr->Name(), (uintptr_t)(ThisPtr));
+    //EXT_DEBUG_TRACE("CampaignClassExtension::Read_INI - Name: %s (0x%08X)\n", Name(), (uintptr_t)(This()));
 
-    const char *ini_name = ThisPtr->Name();
-
-    if (!ini.Is_Present(ini_name)) {
+    if (!AbstractTypeClassExtension::Read_INI(ini)) {
         return false;
     }
+
+    const char *ini_name = Name();
 
     IsDebugOnly = ini.Get_Bool(ini_name, "DebugOnly", IsDebugOnly);
 
@@ -184,8 +164,8 @@ bool CampaignClassExtension::Read_INI(CCINIClass &ini)
      */
     if (IsDebugOnly) {
         char buffer[128];
-        std::strncpy(buffer, ThisPtr->Description, sizeof(buffer));
-        std::snprintf(ThisPtr->Description, sizeof(ThisPtr->Description), "[Debug] - %s", buffer);
+        std::strncpy(buffer, This()->Description, sizeof(buffer));
+        std::snprintf(This()->Description, sizeof(This()->Description), "[Debug] - %s", buffer);
     }
     
     ini.Get_String(ini_name, "IntroMovie", IntroMovie, sizeof(IntroMovie));

@@ -27,15 +27,11 @@
  ******************************************************************************/
 #pragma once
 
-#include "extension.h"
-#include "container.h"
+#include "footext.h"
+#include "unit.h"
 
 
-class UnitClass;
-class HouseClass;
-
-
-class UnitClassExtension final : public Extension<UnitClass>
+class UnitClassExtension final : public FootClassExtension
 {
     public:
         UnitClassExtension(UnitClass *this_ptr);
@@ -49,8 +45,9 @@ class UnitClassExtension final : public Extension<UnitClass>
         virtual void Detach(TARGET target, bool all = true) override;
         virtual void Compute_CRC(WWCRCEngine &crc) const override;
 
+        virtual UnitClass *This() const override { return reinterpret_cast<UnitClass *>(FootClassExtension::This()); }
+
+        virtual ExtensionRTTIType What_Am_I() const override { return EXT_RTTI_UNIT; }
+
     public:
 };
-
-
-extern ExtensionMap<UnitClass, UnitClassExtension> UnitClassExtensions;

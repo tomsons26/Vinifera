@@ -27,15 +27,11 @@
  ******************************************************************************/
 #pragma once
 
-#include "extension.h"
-#include "container.h"
+#include "objecttypeext.h"
+#include "isotiletype.h"
 
 
-class IsometricTileTypeClass;
-class CCINIClass;
-
-
-class IsometricTileTypeClassExtension final : public Extension<IsometricTileTypeClass>
+class IsometricTileTypeClassExtension final : public ObjectTypeClassExtension
 {
     public:
         IsometricTileTypeClassExtension(IsometricTileTypeClass *this_ptr);
@@ -49,7 +45,11 @@ class IsometricTileTypeClassExtension final : public Extension<IsometricTileType
         virtual void Detach(TARGET target, bool all = true) override;
         virtual void Compute_CRC(WWCRCEngine &crc) const override;
 
-        bool Read_INI(CCINIClass &ini);
+        virtual IsometricTileTypeClass *This() const override { return reinterpret_cast<IsometricTileTypeClass *>(ObjectTypeClassExtension::This()); }
+
+        virtual ExtensionRTTIType What_Am_I() const override { return EXT_RTTI_ISOTILETYPE; }
+
+        virtual bool Read_INI(CCINIClass &ini) override;
 
         /**
          *  Initialises theater control file globals.
@@ -61,8 +61,4 @@ class IsometricTileTypeClassExtension final : public Extension<IsometricTileType
          *  What set is this tile type part of?
          */
         const char *TileSetName;
-
 };
-
-
-extern ExtensionMap<IsometricTileTypeClass, IsometricTileTypeClassExtension> IsometricTileTypeClassExtensions;

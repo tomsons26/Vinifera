@@ -27,15 +27,15 @@
  ******************************************************************************/
 #pragma once
 
-#include "extension.h"
-#include "container.h"
+#include "footext.h"
+#include "infantry.h"
 
 
 class InfantryClass;
 class HouseClass;
 
 
-class InfantryClassExtension final : public Extension<InfantryClass>
+class InfantryClassExtension final : public FootClassExtension
 {
     public:
         InfantryClassExtension(InfantryClass *this_ptr);
@@ -49,8 +49,9 @@ class InfantryClassExtension final : public Extension<InfantryClass>
         virtual void Detach(TARGET target, bool all = true) override;
         virtual void Compute_CRC(WWCRCEngine &crc) const override;
 
+        virtual InfantryClass *This() const override { return reinterpret_cast<InfantryClass *>(FootClassExtension::This()); }
+
+        virtual ExtensionRTTIType What_Am_I() const override { return EXT_RTTI_INFANTRY; }
+
     public:
 };
-
-
-extern ExtensionMap<InfantryClass, InfantryClassExtension> InfantryClassExtensions;

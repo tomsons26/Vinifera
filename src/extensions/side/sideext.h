@@ -27,15 +27,11 @@
  ******************************************************************************/
 #pragma once
 
-#include "extension.h"
-#include "container.h"
+#include "abstracttypeext.h"
+#include "side.h"
 
 
-class SideClass;
-class CCINIClass;
-
-
-class SideClassExtension final : public Extension<SideClass>
+class SideClassExtension final : public AbstractTypeClassExtension
 {
     public:
         SideClassExtension(SideClass *this_ptr);
@@ -49,11 +45,11 @@ class SideClassExtension final : public Extension<SideClass>
         virtual void Detach(TARGET target, bool all = true) override;
         virtual void Compute_CRC(WWCRCEngine &crc) const override;
 
-        bool Read_INI(CCINIClass &ini);
+        virtual bool Read_INI(CCINIClass &ini) override;
+
+        virtual SideClass *This() const override { return reinterpret_cast<SideClass *>(AbstractTypeClassExtension::This()); }
+
+        virtual ExtensionRTTIType What_Am_I() const override { return EXT_RTTI_SIDE; }
 
     public:
-
 };
-
-
-extern ExtensionMap<SideClass, SideClassExtension> SideClassExtensions;

@@ -33,6 +33,9 @@
 #include "debughandler.h"
 #include "asserthandler.h"
 
+#include "hooker.h"
+#include "hooker_macros.h"
+
 
 /**
  *  A fake class for implementing new member functions which allow

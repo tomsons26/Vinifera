@@ -27,15 +27,11 @@
  ******************************************************************************/
 #pragma once
 
-#include "extension.h"
-#include "container.h"
+#include "abstracttypeext.h"
+#include "housetype.h"
 
 
-class HouseTypeClass;
-class CCINIClass;
-
-
-class HouseTypeClassExtension final : public Extension<HouseTypeClass>
+class HouseTypeClassExtension final : public AbstractTypeClassExtension
 {
     public:
         HouseTypeClassExtension(HouseTypeClass *this_ptr);
@@ -48,12 +44,12 @@ class HouseTypeClassExtension final : public Extension<HouseTypeClass>
 
         virtual void Detach(TARGET target, bool all = true) override;
         virtual void Compute_CRC(WWCRCEngine &crc) const override;
+        
+        virtual HouseTypeClass *This() const override { return reinterpret_cast<HouseTypeClass *>(AbstractTypeClassExtension::This()); }
 
-        bool Read_INI(CCINIClass &ini);
+        virtual ExtensionRTTIType What_Am_I() const override { return EXT_RTTI_HOUSETYPE; }
+
+        virtual bool Read_INI(CCINIClass &ini) override;
 
     public:
-
 };
-
-
-extern ExtensionMap<HouseTypeClass, HouseTypeClassExtension> HouseTypeClassExtensions;

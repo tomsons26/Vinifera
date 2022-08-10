@@ -27,15 +27,11 @@
  ******************************************************************************/
 #pragma once
 
-#include "extension.h"
-#include "container.h"
+#include "abstracttypeext.h"
+#include "tiberium.h"
 
 
-class TiberiumClass;
-class CCINIClass;
-
-
-class TiberiumClassExtension final : public Extension<TiberiumClass>
+class TiberiumClassExtension final : public AbstractTypeClassExtension
 {
     public:
         TiberiumClassExtension(TiberiumClass *this_ptr);
@@ -49,11 +45,11 @@ class TiberiumClassExtension final : public Extension<TiberiumClass>
         virtual void Detach(TARGET target, bool all = true) override;
         virtual void Compute_CRC(WWCRCEngine &crc) const override;
 
-        bool Read_INI(CCINIClass &ini);
+        virtual bool Read_INI(CCINIClass &ini) override;
+
+        virtual TiberiumClass *This() const override { return reinterpret_cast<TiberiumClass *>(AbstractTypeClassExtension::This()); }
+
+        virtual ExtensionRTTIType What_Am_I() const override { return EXT_RTTI_TIBERIUM; }
 
     public:
-
 };
-
-
-extern ExtensionMap<TiberiumClass, TiberiumClassExtension> TiberiumClassExtensions;

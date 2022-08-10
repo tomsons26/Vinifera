@@ -27,15 +27,14 @@
  ******************************************************************************/
 #pragma once
 
-#include "extension.h"
-#include "container.h"
+#include "objectext.h"
 #include "terrain.h"
 
 
 class LightSourceClass;
 
 
-class TerrainClassExtension final : public Extension<TerrainClass>
+class TerrainClassExtension final : public ObjectClassExtension
 {
     public:
         TerrainClassExtension(TerrainClass *this_ptr);
@@ -49,12 +48,13 @@ class TerrainClassExtension final : public Extension<TerrainClass>
         virtual void Detach(TARGET target, bool all = true) override;
         virtual void Compute_CRC(WWCRCEngine &crc) const override;
 
+        virtual TerrainClass *This() const override { return reinterpret_cast<TerrainClass *>(ObjectClassExtension::This()); }
+
+        virtual ExtensionRTTIType What_Am_I() const override { return EXT_RTTI_TERRAIN; }
+
     public:
         /**
          *  The light source instance for this terrain object.
          */
         LightSourceClass *LightSource;
 };
-
-
-extern ExtensionMap<TerrainClass, TerrainClassExtension> TerrainClassExtensions;

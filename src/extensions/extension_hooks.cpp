@@ -25,7 +25,7 @@
  *                 If not, see <http://www.gnu.org/licenses/>.
  *
  ******************************************************************************/
-#include "ext_hooks.h"
+#include "extension_hooks.h"
 #include "saveload_hooks.h"
 #include "iomap.h"
 
@@ -128,12 +128,96 @@
 #include "hooker_macros.h"
 
 
+/**
+ *  This patch clears the DWORD at 0x10 (0x10 is "bool IsDirty") to use the space
+ *  for storing a pointer to the extension class instance for this AbstractClass.
+ * 
+ *  @author: CCHyper
+ */
+DECLARE_PATCH(_AbstractClass_Constructor_Extension)
+{
+    _asm { mov eax, ecx }
+    _asm { xor ecx, ecx }
+
+    _asm { mov [eax+0x8], 0xFFFFFFFF } // ID
+    _asm { mov [eax+0x0C], ecx } // HeapID
+    _asm { mov [eax+0x10], ecx } // IsDirty, now reused as a extension pointer.
+
+    _asm { mov [eax+0x0], 0x006CAA6C } // offset const AbstractClass::`vftable'
+    _asm { mov [eax+0x4], 0x006CAA54 } // offset const AbstractClass::`vftable' for IRTTITypeInfo
+
+    _asm { retn }
+}
+
+
+/**
+ *  This patch forces AbstractClass::IsDirty() to return true.
+ * 
+ *  @author: CCHyper
+ */
+DECLARE_PATCH(_AbstractClass_IsDirty_Return_True)
+{
+    _asm { xor eax, eax }
+    _asm { mov al, 1 }
+    _asm { ret 4 }
+}
+
+
+static void Extension_Abstract_Hooks()
+{
+    Patch_Jump(0x00405B50, &_AbstractClass_Constructor_Extension);
+    Patch_Jump(0x00405E00, &_AbstractClass_IsDirty_Return_True);
+
+    /**
+     *  Removes the branch from AbstractClass::Abstract_Save which clears IsDirty.
+     */
+    Patch_Byte_Range(0x00405CF8, 0x90, 12);
+}
+
+
 void Extension_Hooks()
 {
+    FetchRes_Hooks();
+    FilePCXExtension_Hooks();
+    CCINIClassExtension_Hooks();
+    RawFileClassExtension_Hooks();
+    CCFileClassExtension_Hooks();
+    CDExtension_Hooks();
+
     /**
      *  Hook the new save and load system in.
      */
     SaveLoad_Hooks();
+
+    /**
+     *  Hook in any new classes.
+     */
+    TheaterTypeClassExtension_Hooks();
+
+    /**
+     *  Dialogs and associated code.
+     */
+    SkirmishDialog_Hooks();
+
+    /**
+     *  Miscellaneous hooks
+     */
+    ToolTipManagerExtension_Hooks();
+    CommandExtension_Hooks();
+    MessageListClassExtension_Hooks();
+    CombatExtension_Hooks();
+    PlayMovieExtension_Hooks();
+    VQAExtension_Hooks();
+    TextLabelClassExtension_Hooks();
+    DropshipExtension_Hooks();
+    EndGameExtension_Hooks();
+
+    /**
+     *  Various functions.
+     */
+    GameInit_Hooks();
+    MainLoop_Hooks();
+    NewMenuExtension_Hooks();
 
     /**
      *  Command line option to disable all extensions.
@@ -145,118 +229,83 @@ void Extension_Hooks()
     }
 
     /**
-     *  Various functions.
-     */
-    GameInit_Hooks();
-    MainLoop_Hooks();
-    NewMenuExtension_Hooks();
-
-    /**
      *  Command line option to disable class extensions.
      */
     cmdline = GetCommandLineA();
     bool no_class_extensions = (std::strstr(cmdline, "-NO_CLASS_EXT") != nullptr);
-    if (!no_class_extensions) {
-
-        /**
-         *  All game class extensions here.
-         */
-        ObjectTypeClassExtension_Hooks();
-        TechnoTypeClassExtension_Hooks();
-        BuildingTypeClassExtension_Hooks();
-        UnitTypeClassExtension_Hooks();
-        InfantryTypeClassExtension_Hooks();
-        AircraftTypeClassExtension_Hooks();
-        WarheadTypeClassExtension_Hooks();
-        WeaponTypeClassExtension_Hooks();
-        BulletTypeClassExtension_Hooks();
-        SuperWeaponTypeClassExtension_Hooks();
-        VoxelAnimTypeClassExtension_Hooks();
-        AnimTypeClassExtension_Hooks();
-        ParticleTypeClassExtension_Hooks();
-        ParticleSystemTypeClassExtension_Hooks();
-        IsometricTileTypeClassExtension_Hooks();
-        OverlayTypeClassExtension_Hooks();
-        SmudgeTypeClassExtension_Hooks();
-        TerrainTypeClassExtension_Hooks();
-        HouseTypeClassExtension_Hooks();
-        SideClassExtension_Hooks();
-        CampaignClassExtension_Hooks();
-        TiberiumClassExtension_Hooks();
-        //TaskForceClassExtension_Hooks();
-        //AITriggerTypeClassExtension_Hooks();
-        //ScriptTypeClassExtension_Hooks();
-        //TagTypeClassExtension_Hooks();
-        //TriggerTypeClassExtension_Hooks();
-
-        TechnoClassExtension_Hooks();
-        UnitClassExtension_Hooks();
-        AircraftClassExtension_Hooks();
-        InfantryClassExtension_Hooks();
-        BuildingClassExtension_Hooks();
-        CellClassExtension_Hooks();
-        HouseClassExtension_Hooks();
-        TeamClassExtension_Hooks();
-        TActionClassExtension_Hooks();
-        FactoryClassExtension_Hooks();
-        TechnoClassExtension_Hooks();
-        FootClassExtension_Hooks();
-        AnimClassExtension_Hooks();
-        BulletClassExtension_Hooks();
-        TerrainClassExtension_Hooks();
-        SuperClassExtension_Hooks();
-        ParticleSystemClassExtension_Hooks();
-
-        EMPulseClassExtension_Hooks();
-        WaveClassExtension_Hooks();
-
+    if (no_class_extensions) {
+        return;
     }
+
+    Extension_Abstract_Hooks();
+
+    /**
+     *  All game class extensions here.
+     */
+    CellClassExtension_Hooks();
+    FactoryClassExtension_Hooks();
+    TeamClassExtension_Hooks();
+    EMPulseClassExtension_Hooks();
+    WaveClassExtension_Hooks();
+    TActionClassExtension_Hooks();
+    ObjectTypeClassExtension_Hooks();
+    TechnoClassExtension_Hooks();
+    TechnoTypeClassExtension_Hooks();
+    FootClassExtension_Hooks();
+    BuildingClassExtension_Hooks();
+    BuildingTypeClassExtension_Hooks();
+    UnitClassExtension_Hooks();
+    UnitTypeClassExtension_Hooks();
+    InfantryClassExtension_Hooks();
+    InfantryTypeClassExtension_Hooks();
+    AircraftClassExtension_Hooks();
+    AircraftTypeClassExtension_Hooks();
+
+    WarheadTypeClassExtension_Hooks();
+    WeaponTypeClassExtension_Hooks();
+    BulletClassExtension_Hooks();
+    BulletTypeClassExtension_Hooks();
+
+    SuperClassExtension_Hooks();
+    SuperWeaponTypeClassExtension_Hooks();
+    VoxelAnimTypeClassExtension_Hooks();
+    AnimClassExtension_Hooks();
+    AnimTypeClassExtension_Hooks();
+
+    ParticleTypeClassExtension_Hooks();
+    ParticleSystemClassExtension_Hooks();
+    ParticleSystemTypeClassExtension_Hooks();
+    IsometricTileTypeClassExtension_Hooks();
+
+    TiberiumClassExtension_Hooks();
+
+    OverlayTypeClassExtension_Hooks();
+    SmudgeTypeClassExtension_Hooks();
+
+    TerrainClassExtension_Hooks();
+    TerrainTypeClassExtension_Hooks();
+
+    HouseClassExtension_Hooks();
+    HouseTypeClassExtension_Hooks();
+
+    SideClassExtension_Hooks();
+    CampaignClassExtension_Hooks();
 
     /**
      *  All global class extensions here.
      */
+    OptionsClassExtension_Hooks();
     RulesClassExtension_Hooks();
     TacticalExtension_Hooks();
     ScenarioClassExtension_Hooks();
+    SessionClassExtension_Hooks();
     DisplayClassExtension_Hooks();
     SidebarClassExtension_Hooks();
-    ToolTipManagerExtension_Hooks();
-    CommandExtension_Hooks();
-    OptionsClassExtension_Hooks();
-    MessageListClassExtension_Hooks();
-    SessionClassExtension_Hooks();
-    CDExtension_Hooks();
-
-    CombatExtension_Hooks();
-
-    PlayMovieExtension_Hooks();
-    VQAExtension_Hooks();
     ThemeClassExtension_Hooks();
 
-    TextLabelClassExtension_Hooks();
-
-    DropshipExtension_Hooks();
-    EndGameExtension_Hooks();
+    MultiMissionExtension_Hooks();
 
     MapSeedClassExtension_Hooks();
     MultiScoreExtension_Hooks();
-    MultiMissionExtension_Hooks();
 
-    CCINIClassExtension_Hooks();
-    RawFileClassExtension_Hooks();
-    CCFileClassExtension_Hooks();
-
-    TheaterTypeClassExtension_Hooks();
-
-    FetchRes_Hooks();
-
-    /**
-     *  Dialogs and associated code.
-     */
-    SkirmishDialog_Hooks();
-
-    /**
-     *  Miscellaneous hooks
-     */
-    FilePCXExtension_Hooks();
 }

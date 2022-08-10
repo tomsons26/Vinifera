@@ -4,11 +4,11 @@
  *
  *  @project       Vinifera
  *
- *  @file          TECHNOEXT_INIT.H
+ *  @file          ABSTRACTTYPEEXT.H
  *
  *  @author        CCHyper
  *
- *  @brief         Contains the hooks for initialising the extended TechnoClass.
+ *  @brief         
  *
  *  @license       Vinifera is free software: you can redistribute it and/or
  *                 modify it under the terms of the GNU General Public License
@@ -27,5 +27,28 @@
  ******************************************************************************/
 #pragma once
 
+#include "abstractext.h"
 
-void TechnoClassExtension_Init();
+
+class AbstractTypeClass;
+class CCINIClass;
+
+
+class AbstractTypeClassExtension : public AbstractClassExtension
+{
+    public:
+        AbstractTypeClassExtension(AbstractTypeClass *this_ptr);
+        AbstractTypeClassExtension(const NoInitClass &noinit);
+        virtual ~AbstractTypeClassExtension();
+
+        virtual bool Read_INI(CCINIClass &ini);
+
+        virtual const char *Name() const override;
+        virtual const char *Full_Name() const override;
+
+    private:
+        AbstractTypeClassExtension(const AbstractTypeClassExtension &) = delete;
+        void operator = (const AbstractTypeClassExtension &) = delete;
+
+    public:
+};

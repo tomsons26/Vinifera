@@ -27,15 +27,11 @@
  ******************************************************************************/
 #pragma once
 
-#include "extension.h"
-#include "container.h"
+#include "abstracttypeext.h"
+#include "weapontype.h"
 
 
-class WeaponTypeClass;
-class CCINIClass;
-
-
-class WeaponTypeClassExtension final : public Extension<WeaponTypeClass>
+class WeaponTypeClassExtension final : public AbstractTypeClassExtension
 {
     public:
         WeaponTypeClassExtension(WeaponTypeClass *this_ptr);
@@ -49,7 +45,11 @@ class WeaponTypeClassExtension final : public Extension<WeaponTypeClass>
         virtual void Detach(TARGET target, bool all = true) override;
         virtual void Compute_CRC(WWCRCEngine &crc) const override;
 
-        bool Read_INI(CCINIClass &ini);
+        virtual bool Read_INI(CCINIClass &ini) override;
+
+        virtual WeaponTypeClass *This() const override { return reinterpret_cast<WeaponTypeClass *>(AbstractTypeClassExtension::This()); }
+
+        virtual ExtensionRTTIType What_Am_I() const override { return EXT_RTTI_WEAPONTYPE; }
 
     public:
         /**
@@ -100,6 +100,3 @@ class WeaponTypeClassExtension final : public Extension<WeaponTypeClass>
         //ParticleSystemClass *ElectricBoltSourceBoltParticleSys;
         //ParticleSystemClass *ElectricBoltTargetBoltParticleSys;
 };
-
-
-extern ExtensionMap<WeaponTypeClass, WeaponTypeClassExtension> WeaponTypeClassExtensions;

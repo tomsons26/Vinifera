@@ -27,15 +27,11 @@
  ******************************************************************************/
 #pragma once
 
-#include "extension.h"
-#include "container.h"
+#include "technotypeext.h"
+#include "buildingtype.h"
 
 
-class BuildingTypeClass;
-class CCINIClass;
-
-
-class BuildingTypeClassExtension final : public Extension<BuildingTypeClass>
+class BuildingTypeClassExtension final : public TechnoTypeClassExtension
 {
     public:
         BuildingTypeClassExtension(BuildingTypeClass *this_ptr);
@@ -49,7 +45,11 @@ class BuildingTypeClassExtension final : public Extension<BuildingTypeClass>
         virtual void Detach(TARGET target, bool all = true) override;
         virtual void Compute_CRC(WWCRCEngine &crc) const override;
 
-        bool Read_INI(CCINIClass &ini);
+        virtual BuildingTypeClass *This() const override { return reinterpret_cast<BuildingTypeClass *>(TechnoTypeClassExtension::This()); }
+
+        virtual ExtensionRTTIType What_Am_I() const override { return EXT_RTTI_BUILDINGTYPE; }
+
+        virtual bool Read_INI(CCINIClass &ini) override;
 
     public:
         /**
@@ -97,6 +97,3 @@ class BuildingTypeClassExtension final : public Extension<BuildingTypeClass>
          */
         bool IsEligibleForAllyBuilding;
 };
-
-
-extern ExtensionMap<BuildingTypeClass, BuildingTypeClassExtension> BuildingTypeClassExtensions;

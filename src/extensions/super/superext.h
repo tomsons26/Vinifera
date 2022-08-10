@@ -27,15 +27,15 @@
  ******************************************************************************/
 #pragma once
 
-#include "extension.h"
-#include "container.h"
+#include "abstracttypeext.h"
+#include "super.h"
+#include "supertype.h"
 
 
-class SuperClass;
 class HouseClass;
 
 
-class SuperClassExtension final : public Extension<SuperClass>
+class SuperClassExtension final : public AbstractClassExtension
 {
     public:
         SuperClassExtension(SuperClass *this_ptr);
@@ -49,6 +49,13 @@ class SuperClassExtension final : public Extension<SuperClass>
         virtual void Detach(TARGET target, bool all = true) override;
         virtual void Compute_CRC(WWCRCEngine &crc) const override;
 
+        virtual const char *Name() const { return reinterpret_cast<const SuperClass *>(This())->Class->Name(); }
+        virtual const char *Full_Name() const { return reinterpret_cast<const SuperClass *>(This())->Class->Full_Name(); }
+
+        virtual SuperClass *This() const override { return reinterpret_cast<SuperClass *>(AbstractClassExtension::This()); }
+
+        virtual ExtensionRTTIType What_Am_I() const override { return EXT_RTTI_SUPER; }
+
     public:
         /**
          *  The time at which the flash mode should return to normal.
@@ -60,6 +67,3 @@ class SuperClassExtension final : public Extension<SuperClass>
          */
         bool TimerFlashState;
 };
-
-
-extern ExtensionMap<SuperClass, SuperClassExtension> SuperClassExtensions;

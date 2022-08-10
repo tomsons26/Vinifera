@@ -27,15 +27,11 @@
  ******************************************************************************/
 #pragma once
 
-#include "extension.h"
-#include "container.h"
+#include "technotypeext.h"
+#include "unittype.h"
 
 
-class UnitTypeClass;
-class CCINIClass;
-
-
-class UnitTypeClassExtension final : public Extension<UnitTypeClass>
+class UnitTypeClassExtension final : public TechnoTypeClassExtension
 {
     public:
         UnitTypeClassExtension(UnitTypeClass *this_ptr);
@@ -49,7 +45,11 @@ class UnitTypeClassExtension final : public Extension<UnitTypeClass>
         virtual void Detach(TARGET target, bool all = true) override;
         virtual void Compute_CRC(WWCRCEngine &crc) const override;
 
-        bool Read_INI(CCINIClass &ini);
+        virtual bool Read_INI(CCINIClass &ini) override;
+
+        virtual UnitTypeClass *This() const override { return reinterpret_cast<UnitTypeClass *>(TechnoTypeClassExtension::This()); }
+
+        virtual ExtensionRTTIType What_Am_I() const override { return EXT_RTTI_UNITTYPE; }
 
     public:
         /**
@@ -77,6 +77,3 @@ class UnitTypeClassExtension final : public Extension<UnitTypeClass>
          */
         unsigned IdleFrames;
 };
-
-
-extern ExtensionMap<UnitTypeClass, UnitTypeClassExtension> UnitTypeClassExtensions;

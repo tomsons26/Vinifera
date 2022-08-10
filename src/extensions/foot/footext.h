@@ -4,11 +4,11 @@
  *
  *  @project       Vinifera
  *
- *  @file          OBJECTTYPEEXT_INIT.H
+ *  @file          FOOTEXT.H
  *
  *  @author        CCHyper
  *
- *  @brief         Contains the hooks for initialising the extended ObjectTypeClass.
+ *  @brief         Extended FootClass class.
  *
  *  @license       Vinifera is free software: you can redistribute it and/or
  *                 modify it under the terms of the GNU General Public License
@@ -27,5 +27,22 @@
  ******************************************************************************/
 #pragma once
 
+#include "technoext.h"
+#include "foot.h"
 
-void ObjectTypeClassExtension_Init();
+
+class FootClassExtension : public TechnoClassExtension
+{
+    public:
+        FootClassExtension(FootClass *this_ptr);
+        FootClassExtension(const NoInitClass &noinit);
+        virtual ~FootClassExtension();
+
+        virtual HRESULT Load(IStream *pStm) override;
+        virtual HRESULT Save(IStream *pStm, BOOL fClearDirty) override;
+
+        virtual void Detach(TARGET target, bool all = true) override;
+        virtual void Compute_CRC(WWCRCEngine &crc) const override;
+
+    public:
+};

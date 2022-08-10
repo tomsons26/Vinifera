@@ -27,15 +27,15 @@
  ******************************************************************************/
 #pragma once
 
-#include "extension.h"
-#include "container.h"
+#include "footext.h"
+#include "aircraft.h"
 
 
 class AircraftClass;
 class HouseClass;
 
 
-class AircraftClassExtension final : public Extension<AircraftClass>
+class AircraftClassExtension final : public FootClassExtension
 {
     public:
         AircraftClassExtension(AircraftClass *this_ptr);
@@ -49,8 +49,9 @@ class AircraftClassExtension final : public Extension<AircraftClass>
         virtual void Detach(TARGET target, bool all = true) override;
         virtual void Compute_CRC(WWCRCEngine &crc) const override;
 
+        virtual AircraftClass *This() const override { return reinterpret_cast<AircraftClass *>(FootClassExtension::This()); }
+
+        virtual ExtensionRTTIType What_Am_I() const override { return EXT_RTTI_AIRCRAFT; }
+
     public:
 };
-
-
-extern ExtensionMap<AircraftClass, AircraftClassExtension> AircraftClassExtensions;

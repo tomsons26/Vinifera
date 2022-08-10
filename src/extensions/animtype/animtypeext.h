@@ -27,16 +27,11 @@
  ******************************************************************************/
 #pragma once
 
-#include "extension.h"
-#include "container.h"
+#include "objecttypeext.h"
+#include "animtype.h"
 
 
-class AnimTypeClass;
-class CCINIClass;
-class ParticleTypeClass;
-
-
-class AnimTypeClassExtension final : public Extension<AnimTypeClass>
+class AnimTypeClassExtension final : public ObjectTypeClassExtension
 {
     public:
         AnimTypeClassExtension(AnimTypeClass *this_ptr);
@@ -50,7 +45,11 @@ class AnimTypeClassExtension final : public Extension<AnimTypeClass>
         virtual void Detach(TARGET target, bool all = true) override;
         virtual void Compute_CRC(WWCRCEngine &crc) const override;
 
-        bool Read_INI(CCINIClass &ini);
+        virtual AnimTypeClass *This() const override { return reinterpret_cast<AnimTypeClass *>(ObjectTypeClassExtension::This()); }
+
+        virtual ExtensionRTTIType What_Am_I() const override { return EXT_RTTI_ANIMTYPE; }
+
+        virtual bool Read_INI(CCINIClass &ini) override;
 
     public:
         /**
@@ -86,6 +85,3 @@ class AnimTypeClassExtension final : public Extension<AnimTypeClass>
          */
         unsigned NumberOfParticles;
 };
-
-
-extern ExtensionMap<AnimTypeClass, AnimTypeClassExtension> AnimTypeClassExtensions;

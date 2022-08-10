@@ -27,18 +27,16 @@
  ******************************************************************************/
 #pragma once
 
-#include "extension.h"
-#include "container.h"
+#include "objecttypeext.h"
+#include "technotype.h"
 #include "typelist.h"
 #include "tibsun_defines.h"
 
 
-class TechnoTypeClass;
-class CCINIClass;
 class BSurface;
 
 
-class TechnoTypeClassExtension final : public Extension<TechnoTypeClass>
+class TechnoTypeClassExtension : public ObjectTypeClassExtension
 {
     public:
         TechnoTypeClassExtension(TechnoTypeClass *this_ptr);
@@ -47,12 +45,13 @@ class TechnoTypeClassExtension final : public Extension<TechnoTypeClass>
 
         virtual HRESULT Load(IStream *pStm) override;
         virtual HRESULT Save(IStream *pStm, BOOL fClearDirty) override;
-        virtual int Size_Of() const override;
 
         virtual void Detach(TARGET target, bool all = true) override;
         virtual void Compute_CRC(WWCRCEngine &crc) const override;
 
-        bool Read_INI(CCINIClass &ini);
+        virtual TechnoTypeClass *This() const override { return reinterpret_cast<TechnoTypeClass *>(ObjectTypeClassExtension::This()); }
+
+        virtual bool Read_INI(CCINIClass &ini) override;
 
     public:
         /**
@@ -147,6 +146,3 @@ class TechnoTypeClassExtension final : public Extension<TechnoTypeClass>
          */
         BSurface *CameoImageSurface;
 };
-
-
-extern ExtensionMap<TechnoTypeClass, TechnoTypeClassExtension> TechnoTypeClassExtensions;

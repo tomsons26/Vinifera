@@ -27,15 +27,11 @@
  ******************************************************************************/
 #pragma once
 
-#include "extension.h"
-#include "container.h"
+#include "abstracttypeext.h"
+#include "campaign.h"
 
 
-class CampaignClass;
-class CCINIClass;
-
-
-class CampaignClassExtension final : public Extension<CampaignClass>
+class CampaignClassExtension final : public AbstractTypeClassExtension
 {
     public:
         CampaignClassExtension(CampaignClass *this_ptr);
@@ -49,7 +45,11 @@ class CampaignClassExtension final : public Extension<CampaignClass>
         virtual void Detach(TARGET target, bool all = true) override;
         virtual void Compute_CRC(WWCRCEngine &crc) const override;
 
-        bool Read_INI(CCINIClass &ini);
+        virtual CampaignClass *This() const override { return reinterpret_cast<CampaignClass *>(AbstractTypeClassExtension::This()); }
+
+        virtual ExtensionRTTIType What_Am_I() const override { return EXT_RTTI_CAMPAIGN; }
+
+        virtual bool Read_INI(CCINIClass &ini) override;
 
     public:
         /**
@@ -62,6 +62,3 @@ class CampaignClassExtension final : public Extension<CampaignClass>
          */
         char IntroMovie[64];
 };
-
-
-extern ExtensionMap<CampaignClass, CampaignClassExtension> CampaignClassExtensions;

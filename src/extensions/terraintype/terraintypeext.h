@@ -27,15 +27,11 @@
  ******************************************************************************/
 #pragma once
 
-#include "extension.h"
-#include "container.h"
+#include "objecttypeext.h"
+#include "terraintype.h"
 
 
-class TerrainTypeClass;
-class CCINIClass;
-
-
-class TerrainTypeClassExtension final : public Extension<TerrainTypeClass>
+class TerrainTypeClassExtension final : public ObjectTypeClassExtension
 {
     public:
         TerrainTypeClassExtension(TerrainTypeClass *this_ptr);
@@ -49,7 +45,11 @@ class TerrainTypeClassExtension final : public Extension<TerrainTypeClass>
         virtual void Detach(TARGET target, bool all = true) override;
         virtual void Compute_CRC(WWCRCEngine &crc) const override;
 
-        bool Read_INI(CCINIClass &ini);
+        virtual bool Read_INI(CCINIClass &ini) override;
+
+        virtual TerrainTypeClass *This() const override { return reinterpret_cast<TerrainTypeClass *>(ObjectTypeClassExtension::This()); }
+
+        virtual ExtensionRTTIType What_Am_I() const override { return EXT_RTTI_TERRAINTYPE; }
 
     public:
         /**
@@ -82,6 +82,3 @@ class TerrainTypeClassExtension final : public Extension<TerrainTypeClass>
          */
         int LightBlueTint;
 };
-
-
-extern ExtensionMap<TerrainTypeClass, TerrainTypeClassExtension> TerrainTypeClassExtensions;

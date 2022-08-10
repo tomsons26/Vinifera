@@ -27,15 +27,11 @@
  ******************************************************************************/
 #pragma once
 
-#include "extension.h"
-#include "container.h"
+#include "objecttypeext.h"
+#include "voxelanimtype.h"
 
 
-class VoxelAnimTypeClass;
-class CCINIClass;
-
-
-class VoxelAnimTypeClassExtension final : public Extension<VoxelAnimTypeClass>
+class VoxelAnimTypeClassExtension final : public ObjectTypeClassExtension
 {
     public:
         VoxelAnimTypeClassExtension(VoxelAnimTypeClass *this_ptr);
@@ -49,11 +45,11 @@ class VoxelAnimTypeClassExtension final : public Extension<VoxelAnimTypeClass>
         virtual void Detach(TARGET target, bool all = true) override;
         virtual void Compute_CRC(WWCRCEngine &crc) const override;
 
-        bool Read_INI(CCINIClass &ini);
+        virtual bool Read_INI(CCINIClass &ini) override;
+
+        virtual VoxelAnimTypeClass *This() const override { return reinterpret_cast<VoxelAnimTypeClass *>(ObjectTypeClassExtension::This()); }
+
+        virtual ExtensionRTTIType What_Am_I() const override { return EXT_RTTI_VOXELANIMTYPE; }
 
     public:
-
 };
-
-
-extern ExtensionMap<VoxelAnimTypeClass, VoxelAnimTypeClassExtension> VoxelAnimTypeClassExtensions;

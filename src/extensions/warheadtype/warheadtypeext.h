@@ -27,15 +27,11 @@
  ******************************************************************************/
 #pragma once
 
-#include "extension.h"
-#include "container.h"
+#include "abstracttypeext.h"
+#include "warheadtype.h"
 
 
-class WarheadTypeClass;
-class CCINIClass;
-
-
-class WarheadTypeClassExtension final : public Extension<WarheadTypeClass>
+class WarheadTypeClassExtension final : public AbstractTypeClassExtension
 {
     public:
         WarheadTypeClassExtension(WarheadTypeClass *this_ptr);
@@ -49,7 +45,11 @@ class WarheadTypeClassExtension final : public Extension<WarheadTypeClass>
         virtual void Detach(TARGET target, bool all = true) override;
         virtual void Compute_CRC(WWCRCEngine &crc) const override;
 
-        bool Read_INI(CCINIClass &ini);
+        virtual bool Read_INI(CCINIClass &ini) override;
+
+        virtual WarheadTypeClass *This() const override { return reinterpret_cast<WarheadTypeClass *>(AbstractTypeClassExtension::This()); }
+
+        virtual ExtensionRTTIType What_Am_I() const override { return EXT_RTTI_WARHEADTYPE; }
 
     public:
         /**
@@ -75,6 +75,3 @@ class WarheadTypeClassExtension final : public Extension<WarheadTypeClass>
         unsigned int ShakePixelXHi;
         unsigned int ShakePixelXLo;
 };
-
-
-extern ExtensionMap<WarheadTypeClass, WarheadTypeClassExtension> WarheadTypeClassExtensions;

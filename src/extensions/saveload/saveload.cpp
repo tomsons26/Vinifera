@@ -29,6 +29,7 @@
 #include "wwcrc.h"
 #include "vinifera_gitinfo.h"
 #include "vinifera_util.h"
+#include "tibsun_globals.h"
 #include "debughandler.h"
 #include "asserthandler.h"
 #include "fatal.h"
@@ -77,6 +78,8 @@
 
 #include "waveext.h"
 
+#include "extension.h"
+
 
 /**
  *  Constant of the current build version number. This number should be
@@ -119,11 +122,6 @@ unsigned ViniferaSaveGameVersion =
             + sizeof(SideClassExtension)
             + sizeof(CampaignClassExtension)
             + sizeof(TiberiumClassExtension)
-            //+ sizeof(TaskForceClassExtension)
-            //+ sizeof(AITriggerTypeClassExtension)
-            //+ sizeof(ScriptTypeClassExtension)
-            //+ sizeof(TagTypeClassExtension)
-            //+ sizeof(TriggerTypeClassExtension)
             + sizeof(TechnoClassExtension)
             + sizeof(AircraftClassExtension)
             + sizeof(BuildingClassExtension)
@@ -133,33 +131,6 @@ unsigned ViniferaSaveGameVersion =
             + sizeof(WaveClassExtension)
             + sizeof(SuperClassExtension)
 ;
-
-
-/**
- *  Handy macro for defining the save function for an extended class.
- * 
- *  @author: CCHyper
- */
-#define DEFINE_EXTENSION_SAVE(class_name, heap_name) \
-    static bool Vinifera_Save_##class_name(IStream *pStm) \
-    { \
-        if (!pStm) { return false; } \
-        for (const auto &i : heap_name.Map) { i.second->Save(pStm, true); } \
-        return true; \
-    }
-
-/**
- *  Handy macro for defining the load function for an extended class.
- * 
- *  @author: CCHyper
- */
-#define DEFINE_EXTENSION_LOAD(class_name, heap_name) \
-    static bool Vinifera_Load_##class_name(IStream *pStm) \
-    { \
-        if (!pStm) { return false; } \
-        for (const auto &i : heap_name.Map) { i.second->Load(pStm); } \
-        return true; \
-    }
 
 
 /**
@@ -371,83 +342,6 @@ static bool Vinifera_Load_TacticalExtension(IStream *pStm)
 }
 
 
-DEFINE_EXTENSION_SAVE(ObjectTypeClassExtension, ObjectTypeClassExtensions);
-DEFINE_EXTENSION_SAVE(TechnoTypeClassExtension, TechnoTypeClassExtensions);
-DEFINE_EXTENSION_SAVE(BuildingTypeClassExtension, BuildingTypeClassExtensions);
-DEFINE_EXTENSION_SAVE(UnitTypeClassExtension, UnitTypeClassExtensions);
-DEFINE_EXTENSION_SAVE(InfantryTypeClassExtension, InfantryTypeClassExtensions);
-DEFINE_EXTENSION_SAVE(AircraftTypeClassExtension, AircraftTypeClassExtensions);
-DEFINE_EXTENSION_SAVE(WarheadTypeClassExtension, WarheadTypeClassExtensions);
-DEFINE_EXTENSION_SAVE(WeaponTypeClassExtension, WeaponTypeClassExtensions);
-DEFINE_EXTENSION_SAVE(BulletTypeClassExtension, BulletTypeClassExtensions);
-DEFINE_EXTENSION_SAVE(SuperWeaponTypeClassExtension, SuperWeaponTypeClassExtensions);
-DEFINE_EXTENSION_SAVE(VoxelAnimTypeClassExtension, VoxelAnimTypeClassExtensions);
-DEFINE_EXTENSION_SAVE(AnimTypeClassExtension, AnimTypeClassExtensions);
-DEFINE_EXTENSION_SAVE(ParticleTypeClassExtension, ParticleTypeClassExtensions);
-DEFINE_EXTENSION_SAVE(ParticleSystemTypeClassExtension, ParticleSystemTypeClassExtensions);
-DEFINE_EXTENSION_SAVE(IsometricTileTypeClassExtension, IsometricTileTypeClassExtensions);
-DEFINE_EXTENSION_SAVE(OverlayTypeClassExtension, OverlayTypeClassExtensions);
-DEFINE_EXTENSION_SAVE(SmudgeTypeClassExtension, SmudgeTypeClassExtensions);
-DEFINE_EXTENSION_SAVE(TerrainTypeClassExtension, TerrainTypeClassExtensions);
-DEFINE_EXTENSION_SAVE(HouseTypeClassExtension, HouseTypeClassExtensions);
-DEFINE_EXTENSION_SAVE(SideClassExtension, SideClassExtensions);
-DEFINE_EXTENSION_SAVE(CampaignClassExtension, CampaignClassExtensions);
-DEFINE_EXTENSION_SAVE(TiberiumClassExtension, TiberiumClassExtensions);
-//DEFINE_EXTENSION_SAVE(TaskForceClassExtension, TaskForceClassExtensions);
-//DEFINE_EXTENSION_SAVE(AITriggerTypeClassExtension, AITriggerTypeClassExtensions);
-//DEFINE_EXTENSION_SAVE(ScriptTypeClassExtension, ScriptTypeClassExtensions);
-//DEFINE_EXTENSION_SAVE(TagTypeClassExtension, TagTypeClassExtensions);
-//DEFINE_EXTENSION_SAVE(TriggerTypeClassExtension, TriggerTypeClassExtensions);
-
-DEFINE_EXTENSION_SAVE(TechnoClassExtension, TechnoClassExtensions);
-DEFINE_EXTENSION_SAVE(AircraftClassExtension, AircraftClassExtensions);
-DEFINE_EXTENSION_SAVE(BuildingClassExtension, BuildingClassExtensions);
-DEFINE_EXTENSION_SAVE(InfantryClassExtension, InfantryClassExtensions);
-DEFINE_EXTENSION_SAVE(UnitClassExtension, UnitClassExtensions);
-DEFINE_EXTENSION_SAVE(TerrainClassExtension, TerrainClassExtensions);
-DEFINE_EXTENSION_SAVE(SuperClassExtension, SuperClassExtensions);
-
-DEFINE_EXTENSION_SAVE(WaveClassExtension, WaveClassExtensions);
-
-DEFINE_EXTENSION_LOAD(ObjectTypeClassExtension, ObjectTypeClassExtensions);
-DEFINE_EXTENSION_LOAD(TechnoTypeClassExtension, TechnoTypeClassExtensions);
-DEFINE_EXTENSION_LOAD(BuildingTypeClassExtension, BuildingTypeClassExtensions);
-DEFINE_EXTENSION_LOAD(UnitTypeClassExtension, UnitTypeClassExtensions);
-DEFINE_EXTENSION_LOAD(InfantryTypeClassExtension, InfantryTypeClassExtensions);
-DEFINE_EXTENSION_LOAD(AircraftTypeClassExtension, AircraftTypeClassExtensions);
-DEFINE_EXTENSION_LOAD(WarheadTypeClassExtension, WarheadTypeClassExtensions);
-DEFINE_EXTENSION_LOAD(WeaponTypeClassExtension, WeaponTypeClassExtensions);
-DEFINE_EXTENSION_LOAD(BulletTypeClassExtension, BulletTypeClassExtensions);
-DEFINE_EXTENSION_LOAD(SuperWeaponTypeClassExtension, SuperWeaponTypeClassExtensions);
-DEFINE_EXTENSION_LOAD(VoxelAnimTypeClassExtension, VoxelAnimTypeClassExtensions);
-DEFINE_EXTENSION_LOAD(AnimTypeClassExtension, AnimTypeClassExtensions);
-DEFINE_EXTENSION_LOAD(ParticleTypeClassExtension, ParticleTypeClassExtensions);
-DEFINE_EXTENSION_LOAD(ParticleSystemTypeClassExtension, ParticleSystemTypeClassExtensions);
-DEFINE_EXTENSION_LOAD(IsometricTileTypeClassExtension, IsometricTileTypeClassExtensions);
-DEFINE_EXTENSION_LOAD(OverlayTypeClassExtension, OverlayTypeClassExtensions);
-DEFINE_EXTENSION_LOAD(SmudgeTypeClassExtension, SmudgeTypeClassExtensions);
-DEFINE_EXTENSION_LOAD(TerrainTypeClassExtension, TerrainTypeClassExtensions);
-DEFINE_EXTENSION_LOAD(HouseTypeClassExtension, HouseTypeClassExtensions);
-DEFINE_EXTENSION_LOAD(SideClassExtension, SideClassExtensions);
-DEFINE_EXTENSION_LOAD(CampaignClassExtension, CampaignClassExtensions);
-DEFINE_EXTENSION_LOAD(TiberiumClassExtension, TiberiumClassExtensions);
-//DEFINE_EXTENSION_LOAD(TaskForceClassExtension, TaskForceClassExtensions);
-//DEFINE_EXTENSION_LOAD(AITriggerTypeClassExtension, AITriggerTypeClassExtensions);
-//DEFINE_EXTENSION_LOAD(ScriptTypeClassExtension, ScriptTypeClassExtensions);
-//DEFINE_EXTENSION_LOAD(TagTypeClassExtension, TagTypeClassExtensions);
-//DEFINE_EXTENSION_LOAD(TriggerTypeClassExtension, TriggerTypeClassExtensions);
-
-DEFINE_EXTENSION_LOAD(TechnoClassExtension, TechnoClassExtensions);
-DEFINE_EXTENSION_LOAD(AircraftClassExtension, AircraftClassExtensions);
-DEFINE_EXTENSION_LOAD(BuildingClassExtension, BuildingClassExtensions);
-DEFINE_EXTENSION_LOAD(InfantryClassExtension, InfantryClassExtensions);
-DEFINE_EXTENSION_LOAD(UnitClassExtension, UnitClassExtensions);
-DEFINE_EXTENSION_LOAD(TerrainClassExtension, TerrainClassExtensions);
-DEFINE_EXTENSION_LOAD(SuperClassExtension, SuperClassExtensions);
-
-DEFINE_EXTENSION_LOAD(WaveClassExtension, WaveClassExtensions);
-
-
 /**
  *  Save all Vinifera data to the file stream.
  * 
@@ -461,7 +355,7 @@ bool Vinifera_Put_All(IStream *pStm)
      */
     DEBUG_INFO("Saving Vinifera header\n");
     if (!Vinifera_Save_Header(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
+        DEBUG_ERROR("\t***** FAILED!\n");
         return false;
     }
 
@@ -472,235 +366,31 @@ bool Vinifera_Put_All(IStream *pStm)
 
     DEBUG_INFO("Saving RulesExtension\n");
     if (!Vinifera_Save_RulesExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
+        DEBUG_ERROR("\t***** FAILED!\n");
         return false;
     }
 
     DEBUG_INFO("Saving SessionExtension\n");
     if (!Vinifera_Save_SessionExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
+        DEBUG_ERROR("\t***** FAILED!\n");
         return false;
     }
 
     DEBUG_INFO("Saving ScenarioExtension\n");
     if (!Vinifera_Save_ScenarioExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
+        DEBUG_ERROR("\t***** FAILED!\n");
         return false;
     }
 
     DEBUG_INFO("Saving TacticalExtension\n");
     if (!Vinifera_Save_TacticalExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
+        DEBUG_ERROR("\t***** FAILED!\n");
         return false;
     }
 
-    DEBUG_INFO("Saving ObjectTypeClassExtension\n");
-    if (!Vinifera_Save_ObjectTypeClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-    DEBUG_INFO("Saving TechnoTypeClassExtension\n");
-    if (!Vinifera_Save_TechnoTypeClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-    DEBUG_INFO("Saving BuildingTypeClassExtension\n");
-    if (!Vinifera_Save_BuildingTypeClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-    DEBUG_INFO("Saving UnitTypeClassExtension\n");
-    if (!Vinifera_Save_UnitTypeClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-    DEBUG_INFO("Saving InfantryTypeClassExtension\n");
-    if (!Vinifera_Save_InfantryTypeClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-    DEBUG_INFO("Saving AircraftTypeClassExtension\n");
-    if (!Vinifera_Save_AircraftTypeClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-    DEBUG_INFO("Saving WarheadTypeClassExtension\n");
-    if (!Vinifera_Save_WarheadTypeClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-    DEBUG_INFO("Saving WeaponTypeClassExtension\n");
-    if (!Vinifera_Save_WeaponTypeClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-    DEBUG_INFO("Saving BulletTypeClassExtension\n");
-    if (!Vinifera_Save_BulletTypeClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-    DEBUG_INFO("Saving SuperWeaponTypeClassExtension\n");
-    if (!Vinifera_Save_SuperWeaponTypeClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-    DEBUG_INFO("Saving VoxelAnimTypeClassExtension\n");
-    if (!Vinifera_Save_VoxelAnimTypeClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-    DEBUG_INFO("Saving AnimTypeClassExtension\n");
-    if (!Vinifera_Save_AnimTypeClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-    DEBUG_INFO("Saving ParticleTypeClassExtension\n");
-    if (!Vinifera_Save_ParticleTypeClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-    DEBUG_INFO("Saving ParticleSystemTypeClassExtension\n");
-    if (!Vinifera_Save_ParticleSystemTypeClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-    DEBUG_INFO("Saving IsometricTileTypeClassExtension\n");
-    if (!Vinifera_Save_IsometricTileTypeClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-    DEBUG_INFO("Saving OverlayTypeClassExtension\n");
-    if (!Vinifera_Save_OverlayTypeClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-    DEBUG_INFO("Saving SmudgeTypeClassExtension\n");
-    if (!Vinifera_Save_SmudgeTypeClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-    DEBUG_INFO("Saving TerrainTypeClassExtension\n");
-    if (!Vinifera_Save_TerrainTypeClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-    DEBUG_INFO("Saving HouseTypeClassExtension\n");
-    if (!Vinifera_Save_HouseTypeClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-    DEBUG_INFO("Saving SideClassExtension\n");
-    if (!Vinifera_Save_SideClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-    DEBUG_INFO("Saving CampaignClassExtension\n");
-    if (!Vinifera_Save_CampaignClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-    DEBUG_INFO("Saving TiberiumClassExtension\n");
-    if (!Vinifera_Save_TiberiumClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-//    DEBUG_INFO("Saving TaskForceClassExtension\n");
-//    if (!Vinifera_Save_TaskForceClassExtension(pStm)) {
-//        DEBUG_INFO("\t***** FAILED!\n");
-//        return false;
-//    }
-//
-//    DEBUG_INFO("Saving AITriggerTypeClassExtension\n");
-//    if (!Vinifera_Save_AITriggerTypeClassExtension(pStm)) {
-//        DEBUG_INFO("\t***** FAILED!\n");
-//        return false;
-//    }
-//
-//    DEBUG_INFO("Saving ScriptTypeClassExtension\n");
-//    if (!Vinifera_Save_ScriptTypeClassExtension(pStm)) {
-//        DEBUG_INFO("\t***** FAILED!\n");
-//        return false;
-//    }
-//
-//    DEBUG_INFO("Saving TagTypeClassExtension\n");
-//    if (!Vinifera_Save_TagTypeClassExtension(pStm)) {
-//        DEBUG_INFO("\t***** FAILED!\n");
-//        return false;
-//    }
-//
-//    DEBUG_INFO("Saving TriggerTypeClassExtension\n");
-//    if (!Vinifera_Save_TriggerTypeClassExtension(pStm)) {
-//        DEBUG_INFO("\t***** FAILED!\n");
-//        return false;
-//    }
-
-    DEBUG_INFO("Saving TechnoClassExtension\n");
-    if (!Vinifera_Save_TechnoClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-    DEBUG_INFO("Saving AircraftClassExtension\n");
-    if (!Vinifera_Save_AircraftClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-    DEBUG_INFO("Saving BuildingClassExtension\n");
-    if (!Vinifera_Save_BuildingClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-    DEBUG_INFO("Saving InfantryClassExtension\n");
-    if (!Vinifera_Save_InfantryClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-    DEBUG_INFO("Saving UnitClassExtension\n");
-    if (!Vinifera_Save_UnitClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-    DEBUG_INFO("Saving TerrainClassExtension\n");
-    if (!Vinifera_Save_TerrainClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-    DEBUG_INFO("Saving SuperClassExtension\n");
-    if (!Vinifera_Save_SuperClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-    DEBUG_INFO("Saving WaveClassExtension\n");
-    if (!Vinifera_Save_WaveClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
+    DEBUG_INFO("Saving class extensions\n");
+    if (!Save_Extensions(pStm)) {
+        DEBUG_ERROR("\t***** FAILED!\n");
         return false;
     }
 
@@ -726,7 +416,7 @@ bool Vinifera_Load_All(IStream *pStm)
      */
     DEBUG_INFO("Loading Vinifera header\n");
     if (!Vinifera_Load_Header(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
+        DEBUG_ERROR("\t***** FAILED!\n");
 
         ShowCursor(TRUE);
         MessageBoxA(MainWindow, "Failed to load Vinifera save-file header!\n", "Vinifera", MB_OK|MB_ICONEXCLAMATION);
@@ -759,235 +449,31 @@ bool Vinifera_Load_All(IStream *pStm)
 
     DEBUG_INFO("Loading RulesExtension\n");
     if (!Vinifera_Load_RulesExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
+        DEBUG_ERROR("\t***** FAILED!\n");
         return false;
     }
 
     DEBUG_INFO("Loading SessionExtension\n");
     if (!Vinifera_Load_SessionExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
+        DEBUG_ERROR("\t***** FAILED!\n");
         return false;
     }
 
     DEBUG_INFO("Loading ScenarioExtension\n");
     if (!Vinifera_Load_ScenarioExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
+        DEBUG_ERROR("\t***** FAILED!\n");
         return false;
     }
 
     DEBUG_INFO("Loading TacticalExtension\n");
     if (!Vinifera_Load_TacticalExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
+        DEBUG_ERROR("\t***** FAILED!\n");
         return false;
     }
 
-    DEBUG_INFO("Loading ObjectTypeClassExtension\n");
-    if (!Vinifera_Load_ObjectTypeClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-    DEBUG_INFO("Loading TechnoTypeClassExtension\n");
-    if (!Vinifera_Load_TechnoTypeClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-    DEBUG_INFO("Loading BuildingTypeClassExtension\n");
-    if (!Vinifera_Load_BuildingTypeClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-    DEBUG_INFO("Loading UnitTypeClassExtension\n");
-    if (!Vinifera_Load_UnitTypeClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-    DEBUG_INFO("Loading InfantryTypeClassExtension\n");
-    if (!Vinifera_Load_InfantryTypeClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-    DEBUG_INFO("Loading AircraftTypeClassExtension\n");
-    if (!Vinifera_Load_AircraftTypeClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-    DEBUG_INFO("Loading WarheadTypeClassExtension\n");
-    if (!Vinifera_Load_WarheadTypeClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-    DEBUG_INFO("Loading WeaponTypeClassExtension\n");
-    if (!Vinifera_Load_WeaponTypeClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-    DEBUG_INFO("Loading BulletTypeClassExtension\n");
-    if (!Vinifera_Load_BulletTypeClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-    DEBUG_INFO("Loading SuperWeaponTypeClassExtension\n");
-    if (!Vinifera_Load_SuperWeaponTypeClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-    DEBUG_INFO("Loading VoxelAnimTypeClassExtension\n");
-    if (!Vinifera_Load_VoxelAnimTypeClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-    DEBUG_INFO("Loading AnimTypeClassExtension\n");
-    if (!Vinifera_Load_AnimTypeClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-    DEBUG_INFO("Loading ParticleTypeClassExtension\n");
-    if (!Vinifera_Load_ParticleTypeClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-    DEBUG_INFO("Loading ParticleSystemTypeClassExtension\n");
-    if (!Vinifera_Load_ParticleSystemTypeClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-    DEBUG_INFO("Loading IsometricTileTypeClassExtension\n");
-    if (!Vinifera_Load_IsometricTileTypeClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-    DEBUG_INFO("Loading OverlayTypeClassExtension\n");
-    if (!Vinifera_Load_OverlayTypeClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-    DEBUG_INFO("Loading SmudgeTypeClassExtension\n");
-    if (!Vinifera_Load_SmudgeTypeClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-    DEBUG_INFO("Loading TerrainTypeClassExtension\n");
-    if (!Vinifera_Load_TerrainTypeClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-    DEBUG_INFO("Loading HouseTypeClassExtension\n");
-    if (!Vinifera_Load_HouseTypeClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-    DEBUG_INFO("Loading SideClassExtension\n");
-    if (!Vinifera_Load_SideClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-    DEBUG_INFO("Loading CampaignClassExtension\n");
-    if (!Vinifera_Load_CampaignClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-    DEBUG_INFO("Loading TiberiumClassExtension\n");
-    if (!Vinifera_Load_TiberiumClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-//    DEBUG_INFO("Loading TaskForceClassExtension\n");
-//    if (!Vinifera_Load_TaskForceClassExtension(pStm)) {
-//        DEBUG_INFO("\t***** FAILED!\n");
-//        return false;
-//    }
-//
-//    DEBUG_INFO("Loading AITriggerTypeClassExtension\n");
-//    if (!Vinifera_Load_AITriggerTypeClassExtension(pStm)) {
-//        DEBUG_INFO("\t***** FAILED!\n");
-//        return false;
-//    }
-//
-//    DEBUG_INFO("Loading ScriptTypeClassExtension\n");
-//    if (!Vinifera_Load_ScriptTypeClassExtension(pStm)) {
-//        DEBUG_INFO("\t***** FAILED!\n");
-//        return false;
-//    }
-//
-//    DEBUG_INFO("Loading TagTypeClassExtension\n");
-//    if (!Vinifera_Load_TagTypeClassExtension(pStm)) {
-//        DEBUG_INFO("\t***** FAILED!\n");
-//        return false;
-//    }
-//
-//    DEBUG_INFO("Loading TriggerTypeClassExtension\n");
-//    if (!Vinifera_Load_TriggerTypeClassExtension(pStm)) {
-//        DEBUG_INFO("\t***** FAILED!\n");
-//        return false;
-//    }
-
-    DEBUG_INFO("Loading TechnoClassExtension\n");
-    if (!Vinifera_Load_TechnoClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-    DEBUG_INFO("Loading AircraftClassExtension\n");
-    if (!Vinifera_Load_AircraftClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-    DEBUG_INFO("Loading BuildingClassExtension\n");
-    if (!Vinifera_Load_BuildingClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-    DEBUG_INFO("Loading InfantryClassExtension\n");
-    if (!Vinifera_Load_InfantryClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-    DEBUG_INFO("Loading UnitClassExtension\n");
-    if (!Vinifera_Load_UnitClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-    DEBUG_INFO("Loading TerrainClassExtension\n");
-    if (!Vinifera_Load_TerrainClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-    DEBUG_INFO("Loading SuperClassExtension\n");
-    if (!Vinifera_Load_SuperClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
-        return false;
-    }
-
-    DEBUG_INFO("Loading WaveClassExtension\n");
-    if (!Vinifera_Load_WaveClassExtension(pStm)) {
-        DEBUG_INFO("\t***** FAILED!\n");
+    DEBUG_INFO("Loading class extensions\n");
+    if (!Load_Extensions(pStm)) {
+        DEBUG_ERROR("\t***** FAILED!\n");
         return false;
     }
 

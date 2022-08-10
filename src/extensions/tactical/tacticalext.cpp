@@ -33,6 +33,7 @@
 #include "colorscheme.h"
 #include "rgb.h"
 #include "wwfont.h"
+#include "wwcrc.h"
 #include "foot.h"
 #include "unit.h"
 #include "unittype.h"
@@ -47,6 +48,8 @@
 #include "supertypeext.h"
 #include "rules.h"
 #include "rulesext.h"
+#include "swizzle.h"
+#include "extension.h"
 #include "asserthandler.h"
 #include "debughandler.h"
 
@@ -60,8 +63,6 @@ TacticalMapExtension *TacticalExtension = nullptr;
  *  @author: CCHyper
  */
 TacticalMapExtension::TacticalMapExtension(Tactical *this_ptr) :
-    Extension(this_ptr),
-
     IsInfoTextSet(false),
     InfoTextBuffer(),
     InfoTextPosition(BOTTOM_LEFT),
@@ -70,11 +71,7 @@ TacticalMapExtension::TacticalMapExtension(Tactical *this_ptr) :
     InfoTextStyle(TPF_6PT_GRAD|TPF_DROPSHADOW),
     InfoTextTimer(0)
 {
-    ASSERT(ThisPtr != nullptr);
-    //EXT_DEBUG_TRACE("TacticalMapExtension constructor - 0x%08X\n", (uintptr_t)(ThisPtr));
-    //EXT_DEBUG_WARNING("TacticalMapExtension constructor - 0x%08X\n", (uintptr_t)(ThisPtr));
-
-    IsInitialized = true;
+    //EXT_DEBUG_TRACE("TacticalMapExtension constructor - 0x%08X\n", (uintptr_t)(This()));
 }
 
 
@@ -84,12 +81,9 @@ TacticalMapExtension::TacticalMapExtension(Tactical *this_ptr) :
  *  @author: CCHyper
  */
 TacticalMapExtension::TacticalMapExtension(const NoInitClass &noinit) :
-    Extension(noinit),
-
     IsInfoTextSet(false),
     InfoTextTimer(noinit)
 {
-    IsInitialized = false;
 }
 
 
@@ -100,10 +94,7 @@ TacticalMapExtension::TacticalMapExtension(const NoInitClass &noinit) :
  */
 TacticalMapExtension::~TacticalMapExtension()
 {
-    //EXT_DEBUG_TRACE("TacticalMapExtension destructor - 0x%08X\n", (uintptr_t)(ThisPtr));
-    //EXT_DEBUG_WARNING("TacticalMapExtension destructor - 0x%08X\n", (uintptr_t)(ThisPtr));
-
-    IsInitialized = false;
+    //EXT_DEBUG_TRACE("TacticalMapExtension destructor - 0x%08X\n", (uintptr_t)(This()));
 }
 
 
@@ -117,16 +108,15 @@ TacticalMapExtension::~TacticalMapExtension()
  */
 HRESULT TacticalMapExtension::Load(IStream *pStm)
 {
-    ASSERT(ThisPtr != nullptr);
-    //EXT_DEBUG_TRACE("TacticalMapExtension::Load - 0x%08X\n", (uintptr_t)(ThisPtr));
+    //EXT_DEBUG_TRACE("TacticalMapExtension::Load - 0x%08X\n", (uintptr_t)(This()));
 
-    HRESULT hr = ExtensionBase::Load(pStm);
-    if (FAILED(hr)) {
-        return E_FAIL;
-    }
+    //HRESULT hr = AbstractClassExtension::Load(pStm);
+    //if (FAILED(hr)) {
+    //    return E_FAIL;
+    //}
 
     LONG id;
-    hr = pStm->Read(&id, sizeof(id), nullptr);
+    HRESULT hr = pStm->Read(&id, sizeof(id), nullptr);
     if (FAILED(hr)) {
         return E_FAIL;
     }
@@ -156,13 +146,14 @@ HRESULT TacticalMapExtension::Load(IStream *pStm)
  */
 HRESULT TacticalMapExtension::Save(IStream *pStm, BOOL fClearDirty)
 {
-    ASSERT(ThisPtr != nullptr);
-    //EXT_DEBUG_TRACE("TacticalMapExtension::Save - 0x%08X\n", (uintptr_t)(ThisPtr));
+    //EXT_DEBUG_TRACE("TacticalMapExtension::Save - 0x%08X\n", (uintptr_t)(This()));
 
-    HRESULT hr = Extension::Save(pStm, fClearDirty);
-    if (FAILED(hr)) {
-        return hr;
-    }
+    //HRESULT hr = AbstractClassExtension::Save(pStm, fClearDirty);
+    //if (FAILED(hr)) {
+    //    return hr;
+    //}
+
+    HRESULT hr = S_OK;
 
     return hr;
 }
@@ -175,8 +166,7 @@ HRESULT TacticalMapExtension::Save(IStream *pStm, BOOL fClearDirty)
  */
 int TacticalMapExtension::Size_Of() const
 {
-    ASSERT(ThisPtr != nullptr);
-    //EXT_DEBUG_TRACE("TacticalMapExtension::Size_Of - 0x%08X\n", (uintptr_t)(ThisPtr));
+    //EXT_DEBUG_TRACE("TacticalMapExtension::Size_Of - 0x%08X\n", (uintptr_t)(This()));
 
     return sizeof(*this);
 }
@@ -189,8 +179,7 @@ int TacticalMapExtension::Size_Of() const
  */
 void TacticalMapExtension::Detach(TARGET target, bool all)
 {
-    ASSERT(ThisPtr != nullptr);
-    //EXT_DEBUG_TRACE("TacticalMapExtension::Detach - 0x%08X\n", (uintptr_t)(ThisPtr));
+    //EXT_DEBUG_TRACE("TacticalMapExtension::Detach - 0x%08X\n", (uintptr_t)(This()));
 }
 
 
@@ -201,8 +190,7 @@ void TacticalMapExtension::Detach(TARGET target, bool all)
  */
 void TacticalMapExtension::Compute_CRC(WWCRCEngine &crc) const
 {
-    ASSERT(ThisPtr != nullptr);
-    //EXT_DEBUG_TRACE("TacticalMapExtension::Compute_CRC - 0x%08X\n", (uintptr_t)(ThisPtr));
+    //EXT_DEBUG_TRACE("TacticalMapExtension::Compute_CRC - 0x%08X\n", (uintptr_t)(This()));
 }
 
 
@@ -213,8 +201,6 @@ void TacticalMapExtension::Compute_CRC(WWCRCEngine &crc) const
  */
 void TacticalMapExtension::Draw_Debug_Overlay()
 {
-    ASSERT(ThisPtr != nullptr);
-
     RGBClass rgb_black(0,0,0);
     unsigned color_black = DSurface::RGB_To_Pixel(0, 0, 0);
     ColorScheme *text_color = ColorScheme::As_Pointer("White");
@@ -290,8 +276,6 @@ void TacticalMapExtension::Draw_Debug_Overlay()
  */
 bool TacticalMapExtension::Debug_Draw_Facings()
 {
-    ASSERT(ThisPtr != nullptr);
-
     if (CurrentObjects.Count() != 1) {
         return false;
     }
@@ -349,8 +333,6 @@ bool TacticalMapExtension::Debug_Draw_Facings()
  */
 void TacticalMapExtension::Draw_FrameStep_Overlay()
 {
-    ASSERT(ThisPtr != nullptr);
-
     RGBClass rgb_black(0,0,0);
     unsigned color_black = DSurface::RGB_To_Pixel(0, 0, 0);
     ColorScheme *text_color = ColorScheme::As_Pointer("White");
@@ -398,8 +380,6 @@ void TacticalMapExtension::Draw_FrameStep_Overlay()
  */
 void TacticalMapExtension::Draw_Information_Text()
 {
-    ASSERT(ThisPtr != nullptr);
-
     RGBClass rgb_black(0,0,0);
     unsigned color_black = DSurface::RGB_To_Pixel(0, 0, 0);
     ColorScheme *text_color = ColorScheme::As_Pointer("White");
@@ -530,9 +510,7 @@ void TacticalMapExtension::Draw_Information_Text()
  *  @authors: CCHyper
  */
 void TacticalMapExtension::Render_Post()
-{
-    ASSERT(ThisPtr != nullptr);
-    //EXT_DEBUG_TRACE("TacticalMapExtension::Render_Post - 0x%08X\n", (uintptr_t)(ThisPtr));
+{    //EXT_DEBUG_TRACE("TacticalMapExtension::Render_Post - 0x%08X\n", (uintptr_t)(This()));
 
     /**
      *  Draw any new post effects here.
@@ -646,8 +624,7 @@ void TacticalMapExtension::Super_Draw_Timer(int row_index, ColorScheme *color, i
  */
 void TacticalMapExtension::Draw_Super_Timers()
 {
-    ASSERT(ThisPtr != nullptr);
-    //EXT_DEBUG_TRACE("TacticalMapExtension::Draw_Super_Timers - 0x%08X\n", (uintptr_t)(ThisPtr));
+    //EXT_DEBUG_TRACE("TacticalMapExtension::Draw_Super_Timers - 0x%08X\n", (uintptr_t)(This()));
 
     /**
      *  Super weapon timers are for multiplayer only.
@@ -688,8 +665,8 @@ void TacticalMapExtension::Draw_Super_Timers()
     for (int i = 0; i < Supers.Count(); ++i) {
 
         SuperClass *super = Supers[i];
-        SuperClassExtension *superext = SuperClassExtensions.find(super);
-        SuperWeaponTypeClassExtension *supertypeext = SuperWeaponTypeClassExtensions.find(super->Class);
+        SuperClassExtension *superext = Fetch_Extension<SuperClassExtension>(super);
+        SuperWeaponTypeClassExtension *supertypeext = Fetch_Extension<SuperWeaponTypeClassExtension>(super->Class);
         if (!superext || !supertypeext) {
             continue;
         }

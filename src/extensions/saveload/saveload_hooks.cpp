@@ -26,7 +26,6 @@
  *                 If not, see <http://www.gnu.org/licenses/>.
  *
  ******************************************************************************/
-#include "ext_hooks.h"
 #include "iomap.h"
 #include "theme.h"
 #include "saveload.h"

@@ -27,9 +27,8 @@
  ******************************************************************************/
 #pragma once
 
-#include "extension.h"
-#include "container.h"
-
+#include "technoext.h"
+#include "building.h"
 #include "ttimer.h"
 #include "ftimer.h"
 
@@ -38,7 +37,7 @@ class BuildingClass;
 class HouseClass;
 
 
-class BuildingClassExtension final : public Extension<BuildingClass>
+class BuildingClassExtension final : public TechnoClassExtension
 {
     public:
         BuildingClassExtension(BuildingClass *this_ptr);
@@ -51,6 +50,10 @@ class BuildingClassExtension final : public Extension<BuildingClass>
 
         virtual void Detach(TARGET target, bool all = true) override;
         virtual void Compute_CRC(WWCRCEngine &crc) const override;
+
+        virtual BuildingClass *This() const override { return reinterpret_cast<BuildingClass *>(TechnoClassExtension::This()); }
+
+        virtual ExtensionRTTIType What_Am_I() const override { return EXT_RTTI_BUILDING; }
 
         void Produce_Cash_AI();
 
@@ -75,6 +78,3 @@ class BuildingClassExtension final : public Extension<BuildingClass>
          */
         bool IsBudgetDepleted;
 };
-
-
-extern ExtensionMap<BuildingClass, BuildingClassExtension> BuildingClassExtensions;

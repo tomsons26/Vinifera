@@ -27,12 +27,11 @@
  ******************************************************************************/
 #pragma once
 
-#include "extension.h"
-#include "container.h"
+#include "objectext.h"
 #include "wave.h"
 
 
-class WaveClassExtension final : public Extension<WaveClass>
+class WaveClassExtension final : public ObjectClassExtension
 {
     public:
         WaveClassExtension(WaveClass *this_ptr);
@@ -46,8 +45,9 @@ class WaveClassExtension final : public Extension<WaveClass>
         virtual void Detach(TARGET target, bool all = true) override;
         virtual void Compute_CRC(WWCRCEngine &crc) const override;
 
+        virtual WaveClass *This() const override { return reinterpret_cast<WaveClass *>(ObjectClassExtension::This()); }
+
+        virtual ExtensionRTTIType What_Am_I() const override { return EXT_RTTI_WAVE; }
+
     public:
 };
-
-
-extern ExtensionMap<WaveClass, WaveClassExtension> WaveClassExtensions;

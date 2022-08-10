@@ -27,15 +27,11 @@
  ******************************************************************************/
 #pragma once
 
-#include "extension.h"
-#include "container.h"
+#include "objecttypeext.h"
+#include "particlesystype.h"
 
 
-class ParticleSystemTypeClass;
-class CCINIClass;
-
-
-class ParticleSystemTypeClassExtension final : public Extension<ParticleSystemTypeClass>
+class ParticleSystemTypeClassExtension final : public ObjectTypeClassExtension
 {
     public:
         ParticleSystemTypeClassExtension(ParticleSystemTypeClass *this_ptr);
@@ -49,11 +45,11 @@ class ParticleSystemTypeClassExtension final : public Extension<ParticleSystemTy
         virtual void Detach(TARGET target, bool all = true) override;
         virtual void Compute_CRC(WWCRCEngine &crc) const override;
 
-        bool Read_INI(CCINIClass &ini);
+        virtual bool Read_INI(CCINIClass &ini) override;
+
+        virtual ParticleSystemTypeClass *This() const override { return reinterpret_cast<ParticleSystemTypeClass *>(ObjectTypeClassExtension::This()); }
+
+        virtual ExtensionRTTIType What_Am_I() const override { return EXT_RTTI_PARTICLESYSTEMTYPE; }
 
     public:
-
 };
-
-
-extern ExtensionMap<ParticleSystemTypeClass, ParticleSystemTypeClassExtension> ParticleSystemTypeClassExtensions;

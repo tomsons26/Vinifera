@@ -182,7 +182,17 @@ static const char *Get_Abstract_Name(const AbstractClass *abstract)
         }
         switch (abstract->What_Am_I()) {
             case RTTI_HOUSE:
-                return reinterpret_cast<const HouseClass *>(abstract)->Class->Name(); // IHouse interface's Name() returns BSTR (wide), so call the Class one instead.
+            {
+                /**
+                 *  Second time around, the Class instance is destoryed before the HouseClass instance
+                 *  so we need to capture instances of this and return the default string.
+                 */
+                HouseTypeClass *htptr = reinterpret_cast<const HouseClass *>(abstract)->Class;
+                if (htptr) {
+                    return htptr->Name(); // IHouse interface's Name() returns BSTR (wide), so call the Class one instead.
+                }
+                break;
+            }
             case RTTI_SUPERWEAPON:
                 return reinterpret_cast<const SuperClass *>(abstract)->Name();
             default:
@@ -471,7 +481,7 @@ AbstractClassExtension *Fetch_Extension_Internal(const AbstractClass *abstract)
     AbstractClassExtension *ext_ptr = Get_Extension_Pointer(abstract);
 
     if (!ext_ptr) {
-        if (Wstring(Get_Abstract_Name(abstract)) == Wstring("GASPOT")) { __debugbreak(); }
+        //if (Wstring(Get_Abstract_Name(abstract)) == Wstring("GASPOT")) { __debugbreak(); }
         DEBUG_ERROR("Fetch_Extension: Extension for \"%s\" is null!\n", Get_Abstract_Name(abstract));
         return nullptr;
     }

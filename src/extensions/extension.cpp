@@ -463,6 +463,7 @@ AbstractClassExtension *Find_Or_Make_Extension_Internal(const AbstractClass *abs
  * 
  *  @author: CCHyper
  */
+#include "wstring.h"
 AbstractClassExtension *Fetch_Extension_Internal(const AbstractClass *abstract)
 {
     ASSERT(abstract != nullptr);
@@ -470,6 +471,7 @@ AbstractClassExtension *Fetch_Extension_Internal(const AbstractClass *abstract)
     AbstractClassExtension *ext_ptr = Get_Extension_Pointer(abstract);
 
     if (!ext_ptr) {
+        if (Wstring(Get_Abstract_Name(abstract)) == Wstring("GASPOT")) { __debugbreak(); }
         DEBUG_ERROR("Fetch_Extension: Extension for \"%s\" is null!\n", Get_Abstract_Name(abstract));
         return nullptr;
     }

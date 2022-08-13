@@ -52,7 +52,7 @@ class SuperWeaponTypeClassExtension final : public AbstractTypeClassExtension
 
         virtual SuperWeaponTypeClass *This() const override { return reinterpret_cast<SuperWeaponTypeClass *>(AbstractTypeClassExtension::This()); }
 
-        virtual ExtensionRTTIType What_Am_I() const override { return EXT_RTTI_SUPER; }
+        virtual ExtensionRTTIType What_Am_I() const override { return EXT_RTTI_SUPERWEAPONTYPE; }
 
     public:
         /**

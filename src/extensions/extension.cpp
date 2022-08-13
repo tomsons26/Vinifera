@@ -184,14 +184,15 @@ static const char *Get_Abstract_Name(const AbstractClass *abstract)
             case RTTI_HOUSE:
             {
                 /**
-                 *  Second time around, the Class instance is destoryed before the HouseClass instance
-                 *  so we need to capture instances of this and return the default string.
+                 *  In most cases Class is null, so we use IniName as the default.
                  */
+                const char *name = reinterpret_cast<const HouseClass *>(abstract)->IniName;
+
                 HouseTypeClass *htptr = reinterpret_cast<const HouseClass *>(abstract)->Class;
                 if (htptr) {
-                    return htptr->Name(); // IHouse interface's Name() returns BSTR (wide), so call the Class one instead.
+                    name = htptr->Name(); // IHouse interface's Name() returns BSTR (wide), so call the Class one instead.
                 }
-                break;
+                return name;
             }
             case RTTI_SUPERWEAPON:
                 return reinterpret_cast<const SuperClass *>(abstract)->Name();

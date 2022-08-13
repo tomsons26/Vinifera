@@ -99,8 +99,7 @@ DECLARE_PATCH(_CampaignClass_Destructor_Patch)
      *  Stolen bytes here.
      */
 original_code:
-    _asm { mov edx, 0x007E2230 } // Campaigns.vtble
-    _asm { mov edx, [edx] }
+    _asm { mov edx, ds:0x007E2230 } // Campaigns.vtble
     JMP_REG(eax, 0x00448AEE);
 }
 
@@ -147,8 +146,7 @@ DECLARE_PATCH(_CampaignClass_Scalar_Destructor_Patch)
      *  Stolen bytes here.
      */
 original_code:
-    _asm { mov edx, 0x007E2230 } // Campaigns.vtble
-    _asm { mov edx, [edx] }
+    _asm { mov edx, ds:0x007E2230 } // Campaigns.vtble
     JMP_REG(eax, 0x00448EFE);
 }
 

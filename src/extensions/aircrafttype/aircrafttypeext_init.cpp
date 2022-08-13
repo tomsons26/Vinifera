@@ -139,8 +139,7 @@ DECLARE_PATCH(_AircraftTypeClass_Destructor_Patch)
      *  Stolen bytes here.
      */
 original_code:
-    _asm { mov edx, 0x007E2420 } // AircraftTypes.vtble
-    _asm { mov edx, [edx] }
+    _asm { mov edx, ds:0x007E2420 } // AircraftTypes.vtble
     JMP_REG(eax, 0x0040FCDE);
 }
 
@@ -165,8 +164,7 @@ DECLARE_PATCH(_AircraftTypeClass_Scalar_Destructor_Patch)
      *  Stolen bytes here.
      */
 original_code:
-    _asm { mov edx, 0x007E2420 } // AircraftTypes.vtble
-    _asm { mov edx, [edx] }
+    _asm { mov edx, ds:0x007E2420 } // AircraftTypes.vtble
     JMP_REG(eax, 0x0041022E);
 }
 

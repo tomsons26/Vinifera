@@ -98,8 +98,7 @@ DECLARE_PATCH(_SideClass_Destructor_Patch)
      *  Stolen bytes here.
      */
 original_code:
-    _asm { mov edx, 0x007B3470 } // Sides.vtble
-    _asm { mov edx, [edx] }
+    _asm { mov edx, ds:0x007B3470 } // Sides.vtble
     JMP_REG(eax, 0x005F1AEE);
 }
 
@@ -124,8 +123,7 @@ DECLARE_PATCH(_SideClass_Scalar_Destructor_Patch)
      *  Stolen bytes here.
      */
 original_code:
-    _asm { mov edx, 0x007B3470 } // Sides.vtble
-    _asm { mov edx, [edx] }
+    _asm { mov edx, ds:0x007B3470 } // Sides.vtble
     JMP_REG(eax, 0x005F1D9E);
 }
 

@@ -122,8 +122,7 @@ DECLARE_PATCH(_IsometricTileTypeClass_Destructor_Patch)
      *  Stolen bytes here.
      */
 original_code:
-    _asm { mov edx, 0x007E48C8 } // IsoTileTypes.vtble
-    _asm { mov edx, [edx] }
+    _asm { mov edx, ds:0x007E48C8 } // IsoTileTypes.vtble
     JMP_REG(eax, 0x004F3387);
 }
 

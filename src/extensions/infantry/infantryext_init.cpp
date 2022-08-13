@@ -119,8 +119,7 @@ DECLARE_PATCH(_InfantryClass_Destructor_Patch)
      *  Stolen bytes here.
      */
 original_code:
-    _asm { mov eax, 0x007E2300 } // Infantry.vtble
-    _asm { mov eax, [eax] }
+    _asm { mov eax, ds:0x007E2300 } // Infantry.vtble
     JMP_REG(edx, 0x004D22E6);
 }
 

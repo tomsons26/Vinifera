@@ -122,8 +122,7 @@ DECLARE_PATCH(_BuildingClass_Destructor_Patch)
      *  Stolen bytes here.
      */
 original_code:
-    _asm { mov edx, 0x007E4708 } // Buildings.vtble
-    _asm { mov edx, [edx] }
+    _asm { mov edx, ds:0x007E4708 } // Buildings.vtble
     JMP_REG(eax, 0x00426674);
 }
 

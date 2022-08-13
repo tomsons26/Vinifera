@@ -120,8 +120,7 @@ DECLARE_PATCH(_BulletTypeClass_Destructor_Patch)
      *  Stolen bytes here.
      */
 original_code:
-    _asm { mov edx, 0x007E21B8 } // BulletTypes.vtble
-    _asm { mov edx, [edx] }
+    _asm { mov edx, ds:0x007E21B8 } // BulletTypes.vtble
     JMP_REG(eax, 0x00447E17);
 }
 
@@ -146,8 +145,7 @@ DECLARE_PATCH(_BulletTypeClass_Scalar_Destructor_Patch)
      *  Stolen bytes here.
      */
 original_code:
-    _asm { mov edx, 0x007E21B8 } // BulletTypes.vtble
-    _asm { mov edx, [edx] }
+    _asm { mov edx, ds:0x007E21B8 } // BulletTypes.vtble
     JMP_REG(eax, 0x00448777);
 }
 

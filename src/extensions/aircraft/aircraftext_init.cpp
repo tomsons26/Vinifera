@@ -120,8 +120,7 @@ DECLARE_PATCH(_AircraftClass_Destructor_Patch)
      *  Stolen bytes here.
      */
 original_code:
-    _asm { mov edx, 0x007E4058 } // Aircraft.vtble
-    _asm { mov edx, [edx] }
+    _asm { mov edx, ds:0x007E4058 } // Aircraft.vtble
     JMP_REG(eax, 0x0040DBBE);
 }
 

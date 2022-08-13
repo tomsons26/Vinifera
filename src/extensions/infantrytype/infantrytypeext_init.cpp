@@ -120,8 +120,7 @@ DECLARE_PATCH(_InfantryTypeClass_Destructor_Patch)
      *  Stolen bytes here.
      */
 original_code:
-    _asm { mov edx, 0x007E4010 } // InfantryType.vtble
-    _asm { mov edx, [edx] }
+    _asm { mov edx, ds:0x007E4010 } // InfantryType.vtble
     JMP_REG(eax, 0x004DA3BF);
 }
 
@@ -146,8 +145,7 @@ DECLARE_PATCH(_InfantryTypeClass_Scalar_Destructor_Patch)
      *  Stolen bytes here.
      */
 original_code:
-    _asm { mov edx, 0x007E4010 } // InfantryType.vtble
-    _asm { mov edx, [edx] }
+    _asm { mov edx, ds:0x007E4010 } // InfantryType.vtble
     JMP_REG(eax, 0x004DB13E);
 }
 

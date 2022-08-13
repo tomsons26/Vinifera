@@ -220,8 +220,7 @@ DECLARE_PATCH(_WaveClass_Destructor_Patch)
      *  Stolen bytes here.
      */
 original_code:
-    _asm { mov edx, 0x007E47E8 } // Waves.vtble
-    _asm { mov edx, [edx] }
+    _asm { mov edx, ds:0x007E47E8 } // Waves.vtble
     JMP_REG(eax, 0x006702DF);
 }
 
@@ -246,8 +245,7 @@ DECLARE_PATCH(_WaveClass_Scalar_Destructor_Patch)
      *  Stolen bytes here.
      */
 original_code:
-    _asm { mov edx, 0x007E47E8 } // Waves.vtble
-    _asm { mov edx, [edx] }
+    _asm { mov edx, ds:0x007E47E8 } // Waves.vtble
     JMP_REG(eax, 0x00672E7E);
 }
 

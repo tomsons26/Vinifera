@@ -179,8 +179,7 @@ DECLARE_PATCH(_TerrainClass_Destructor_Patch)
      *  Stolen bytes here.
      */
 original_code:
-    _asm { mov edx, 0x007E4568 } // Terrains.vtble
-    _asm { mov edx, [edx] }
+    _asm { mov edx, ds:0x007E4568 } // Terrains.vtble
     JMP_REG(eax, 0x0063F193);
 }
 
@@ -205,8 +204,7 @@ DECLARE_PATCH(_TerrainClass_Scalar_Destructor_Patch)
      *  Stolen bytes here.
      */
 original_code:
-    _asm { mov edx, 0x007E4568 } // Terrains.vtble
-    _asm { mov edx, [edx] }
+    _asm { mov edx, ds:0x007E4568 } // Terrains.vtble
     JMP_REG(eax, 0x00640C43);
 }
 

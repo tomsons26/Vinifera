@@ -120,8 +120,7 @@ DECLARE_PATCH(_ParticleSystemTypeClass_Destructor_Patch)
      *  Stolen bytes here.
      */
 original_code:
-    _asm { mov edx, 0x007E2288 } // ParticleSystemTypes.vtble
-    _asm { mov edx, [edx] }
+    _asm { mov edx, ds:0x007E2288 } // ParticleSystemTypes.vtble
     JMP_REG(eax, 0x005AE57E);
 }
 
@@ -146,8 +145,7 @@ DECLARE_PATCH(_ParticleSystemTypeClass_Scalar_Destructor_Patch)
      *  Stolen bytes here.
      */
 original_code:
-    _asm { mov edx, 0x007E2288 } // ParticleSystemTypes.vtble
-    _asm { mov edx, [edx] }
+    _asm { mov edx, ds:0x007E2288 } // ParticleSystemTypes.vtble
     JMP_REG(eax, 0x005AEC6E);
 }
 

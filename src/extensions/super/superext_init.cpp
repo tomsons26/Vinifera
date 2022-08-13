@@ -129,8 +129,7 @@ DECLARE_PATCH(_SuperClass_Destructor_Patch)
      *  Stolen bytes here.
      */
 original_code:
-    _asm { mov edx, 0x0080F588 } // Neuron vector.vtble
-    _asm { mov edx, [edx] }
+    _asm { mov edx, ds:0x0080F588 } // Neuron vector.vtble
     JMP_REG(eax, 0x0060B520);
 }
 
@@ -155,8 +154,7 @@ DECLARE_PATCH(_SuperClass_Scalar_Destructor_Patch)
      *  Stolen bytes here.
      */
 original_code:
-    _asm { mov edx, 0x0080F588 } // Neuron vector.vtble
-    _asm { mov edx, [edx] }
+    _asm { mov edx, ds:0x0080F588 } // Neuron vector.vtble
     JMP_REG(eax, 0x0060CC30);
 }
 

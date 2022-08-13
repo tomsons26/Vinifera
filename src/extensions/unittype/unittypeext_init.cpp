@@ -121,8 +121,7 @@ DECLARE_PATCH(_UnitTypeClass_Destructor_Patch)
      *  Stolen bytes here.
      */
 original_code:
-    _asm { mov edx, 0x007E2218 } // UnitTypes.vtble
-    _asm { mov edx, [edx] }
+    _asm { mov edx, ds:0x007E2218 } // UnitTypes.vtble
     JMP_REG(eax, 0x0065BADE);
 }
 
@@ -147,8 +146,7 @@ DECLARE_PATCH(_UnitTypeClass_Scalar_Destructor_Patch)
      *  Stolen bytes here.
      */
 original_code:
-    _asm { mov edx, 0x007E2218 } // UnitTypes.vtble
-    _asm { mov edx, [edx] }
+    _asm { mov edx, ds:0x007E2218 } // UnitTypes.vtble
     JMP_REG(eax, 0x0065C79E);
 }
 

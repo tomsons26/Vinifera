@@ -127,8 +127,7 @@ DECLARE_PATCH(_HouseClass_Destructor_Patch)
      *  Stolen bytes here.
      */
 original_code:
-    _asm { mov edx, 0x007E1558 } // Houses.vtble
-    _asm { mov edx, [edx] }
+    _asm { mov edx, ds:0x007E1558 } // Houses.vtble
     JMP_REG(eax, 0x004BB9BD);
 }
 

@@ -120,8 +120,7 @@ DECLARE_PATCH(_SmudgeTypeClass_Destructor_Patch)
      *  Stolen bytes here.
      */
 original_code:
-    _asm { mov edx, 0x007B3470 } // SmudgeTypes.vtble
-    _asm { mov edx, [edx] }
+    _asm { mov edx, ds:0x007B3470 } // SmudgeTypes.vtble
     JMP_REG(eax, 0x005FB31E);
 }
 
@@ -146,8 +145,7 @@ DECLARE_PATCH(_SmudgeTypeClass_Scalar_Destructor_Patch)
      *  Stolen bytes here.
      */
 original_code:
-    _asm { mov edx, 0x007B3470 } // SmudgeTypes.vtble
-    _asm { mov edx, [edx] }
+    _asm { mov edx, ds:0x007B3470 } // SmudgeTypes.vtble
     JMP_REG(eax, 0x005FC02E);
 }
 

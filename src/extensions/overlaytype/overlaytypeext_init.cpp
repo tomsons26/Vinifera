@@ -120,8 +120,7 @@ DECLARE_PATCH(_OverlayTypeClass_Destructor_Patch)
      *  Stolen bytes here.
      */
 original_code:
-    _asm { mov edx, 0x007E22A0 } // OverlayTypes.vtble
-    _asm { mov edx, [edx] }
+    _asm { mov edx, ds:0x007E22A0 } // OverlayTypes.vtble
     JMP_REG(eax, 0x0058D1A1);
 }
 
@@ -146,8 +145,7 @@ DECLARE_PATCH(_OverlayTypeClass_Scalar_Destructor_Patch)
      *  Stolen bytes here.
      */
 original_code:
-    _asm { mov edx, 0x007E22A0 } // OverlayTypes.vtble
-    _asm { mov edx, [edx] }
+    _asm { mov edx, ds:0x007E22A0 } // OverlayTypes.vtble
     JMP_REG(eax, 0x0058DC91);
 }
 

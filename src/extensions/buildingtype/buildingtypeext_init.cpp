@@ -122,8 +122,7 @@ DECLARE_PATCH(_BuildingTypeClass_Destructor_Patch)
      *  Stolen bytes here.
      */
 original_code:
-    _asm { mov edx, 0x007E21A0 } // BuildingTypes.vtble
-    _asm { mov edx, [edx] }
+    _asm { mov edx, ds:0x007E21A0 } // BuildingTypes.vtble
     JMP_REG(eax, 0x0043F958);
 }
 
@@ -148,8 +147,7 @@ DECLARE_PATCH(_BuildingTypeClass_Scalar_Destructor_Patch)
      *  Stolen bytes here.
      */
 original_code:
-    _asm { mov edx, 0x007E21A0 } // BuildingTypes.vtble
-    _asm { mov edx, [edx] }
+    _asm { mov edx, ds:0x007E21A0 } // BuildingTypes.vtble
     JMP_REG(eax, 0x00444088);
 }
 

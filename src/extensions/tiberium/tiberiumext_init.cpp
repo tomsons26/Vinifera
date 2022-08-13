@@ -99,8 +99,7 @@ DECLARE_PATCH(_TiberiumClass_Destructor_Patch)
      *  Stolen bytes here.
      */
 original_code:
-    _asm { mov edx, 0x0080F408 } // Tiberiums.vtble
-    _asm { mov edx, [edx] }
+    _asm { mov edx, ds:0x0080F408 } // Tiberiums.vtble
     JMP_REG(eax, 0x00644A99);
 }
 

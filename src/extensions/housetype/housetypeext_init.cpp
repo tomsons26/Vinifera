@@ -120,8 +120,7 @@ DECLARE_PATCH(_HouseTypeClass_Destructor_Patch)
      *  Stolen bytes here.
      */
 original_code:
-    _asm { mov edx, 0x007E21D0 } // HouseTypes.vtble
-    _asm { mov edx, [edx] }
+    _asm { mov edx, ds:0x007E21D0 } // HouseTypes.vtble
     JMP_REG(eax, 0x004CDE9E);
 }
 
@@ -146,8 +145,7 @@ DECLARE_PATCH(_HouseTypeClass_Scalar_Destructor_Patch)
      *  Stolen bytes here.
      */
 original_code:
-    _asm { mov edx, 0x007E21D0 } // HouseTypes.vtble
-    _asm { mov edx, [edx] }
+    _asm { mov edx, ds:0x007E21D0 } // HouseTypes.vtble
     JMP_REG(eax, 0x004CE60E);
 }
 

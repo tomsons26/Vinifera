@@ -120,8 +120,7 @@ DECLARE_PATCH(_VoxelAnimTypeClass_Destructor_Patch)
      *  Stolen bytes here.
      */
 original_code:
-    _asm { mov edx, 0x007E46F0 } // VoxelAnimTypes.vtble
-    _asm { mov edx, [edx] }
+    _asm { mov edx, ds:0x007E46F0 } // VoxelAnimTypes.vtble
     JMP_REG(eax, 0x0065F5F7);
 }
 
@@ -146,8 +145,7 @@ DECLARE_PATCH(_VoxelAnimTypeClass_Scalar_Destructor_Patch)
      *  Stolen bytes here.
      */
 original_code:
-    _asm { mov edx, 0x007E46F0 } // VoxelAnimTypes.vtble
-    _asm { mov edx, [edx] }
+    _asm { mov edx, ds:0x007E46F0 } // VoxelAnimTypes.vtble
     JMP_REG(eax, 0x006600E7);
 }
 

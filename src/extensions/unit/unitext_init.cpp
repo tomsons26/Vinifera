@@ -121,8 +121,7 @@ DECLARE_PATCH(_UnitClass_Destructor_Patch)
      *  Stolen bytes here.
      */
 original_code:
-    _asm { mov edx, 0x007B3458 } // Units.vtble
-    _asm { mov edx, [edx] }
+    _asm { mov edx, ds:0x007B3458 } // Units.vtble
     JMP_REG(ecx, 0x0064D8B4);
 }
 

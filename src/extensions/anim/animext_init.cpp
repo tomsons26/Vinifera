@@ -207,8 +207,7 @@ DECLARE_PATCH(_AnimClass_Destructor_Patch)
      *  Stolen bytes here.
      */
 original_code:
-    _asm { mov eax, 0x007E4580 } // GameActive
-    _asm { mov eax, [eax] }
+    _asm { mov eax, ds:0x007E4580 } // GameActive
     JMP_REG(ebx, 0x004142D0);
 }
 

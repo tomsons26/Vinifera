@@ -69,10 +69,10 @@ DECLARE_PATCH(_SidebarClass_StripClass_ObjectTypeClass_Custom_Cameo_Image_Patch)
     _SidebarClass_StripClass_obj = obj;
     _SidebarClass_StripClass_CustomImage = nullptr;
 
-    technotypeext = Fetch_Extension<TechnoTypeClassExtension>(reinterpret_cast<const TechnoTypeClass *>(obj));
-    if (technotypeext && technotypeext->CameoImageSurface) {
-        _SidebarClass_StripClass_CustomImage = technotypeext->CameoImageSurface;
-    }
+    //technotypeext = Fetch_Extension<TechnoTypeClassExtension>(reinterpret_cast<const TechnoTypeClass *>(obj));
+    //if (technotypeext && technotypeext->CameoImageSurface) {
+    //    _SidebarClass_StripClass_CustomImage = technotypeext->CameoImageSurface;
+    //}
 
     _asm { mov eax, shapefile }
 
@@ -90,10 +90,10 @@ DECLARE_PATCH(_SidebarClass_StripClass_SuperWeaponType_Custom_Cameo_Image_Patch)
     _SidebarClass_StripClass_spc = supertype;
     _SidebarClass_StripClass_CustomImage = nullptr;
 
-    supertypeext = Fetch_Extension<SuperWeaponTypeClassExtension>(supertype);
-    if (supertypeext && supertypeext->CameoImageSurface) {
-        _SidebarClass_StripClass_CustomImage = supertypeext->CameoImageSurface;
-    }
+    //supertypeext = Fetch_Extension<SuperWeaponTypeClassExtension>(supertype);
+    //if (supertypeext && supertypeext->CameoImageSurface) {
+    //    _SidebarClass_StripClass_CustomImage = supertypeext->CameoImageSurface;
+    //}
 
     _asm { mov ebx, shapefile }
 

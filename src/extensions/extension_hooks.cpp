@@ -126,6 +126,7 @@
 
 #include "hooker.h"
 #include "hooker_macros.h"
+#include "swizzle.h"
 
 
 /**
@@ -162,12 +163,79 @@ DECLARE_PATCH(_AbstractClass_IsDirty_Return_True)
     _asm { ret 4 }
 }
 
+bool &IsFS = Make_Global<bool>(0x007E497C);
+
+class AbstractClassExtension;
+extern DynamicVectorClass<AbstractClassExtension *> AllExtensions;
+
+HRESULT STDMETHODCALLTYPE Abstract_Save(AbstractClass *This, IStream *pStm, BOOL fClearDirty)
+{
+    if (!pStm) {
+        return E_POINTER;
+    }
+
+    ULONG id = (ULONG)This;
+    HRESULT hr = pStm->Write(&id, sizeof(id), nullptr);
+    if (hr < 0) {
+        return hr;
+    }
+
+    hr = pStm->Write(This, This->Size_Of(false), nullptr);
+
+    uintptr_t extension_address = (*(unsigned int *)((char *)This + 0x10));
+    uintptr_t extension_id = -1;
+    if (extension_address != 0) {
+        extension_id = (uintptr_t)AllExtensions.ID((AbstractClassExtension *)extension_address);
+        DEBUG_INFO("Saving Extension %X as ID %d\n", extension_address, extension_id);
+    }
+    
+    hr = pStm->Write(&extension_id, sizeof(extension_id), nullptr);
+
+    return hr;
+}
+
+HRESULT STDMETHODCALLTYPE Abstract_Load(AbstractClass *This, IStream *pStm)
+{
+    if (!pStm) {
+        return E_POINTER;
+    }
+
+    ULONG id;
+    HRESULT hr = pStm->Read(&id, sizeof(ULONG), nullptr);
+    if (hr < 0) {
+        return hr;
+    }
+    SwizzleManager.Here_I_Am((LONG)id, This);
+
+    int heap_id = This->HeapID;
+
+    hr = pStm->Read(This, This->Size_Of(IsFS), nullptr);
+
+    This->HeapID = heap_id;
+
+
+    uintptr_t extension_address = 0;
+    uintptr_t extension_id = -1;
+
+    hr = pStm->Read(&extension_id, sizeof(extension_id), nullptr);
+
+    if (extension_id != -1) {
+        extension_address = (uintptr_t)AllExtensions[extension_id];
+        DEBUG_INFO("Loading Extension %X from ID %d\n", extension_address, extension_id);
+    }
+
+    (*(uintptr_t *)((char *)This + 0x10)) = extension_address;
+
+    return hr;
+}
 
 static void Extension_Abstract_Hooks()
 {
     Patch_Jump(0x00405B50, &_AbstractClass_Constructor_Extension);
     Patch_Jump(0x00405E00, &_AbstractClass_IsDirty_Return_True);
 
+    Patch_Jump(0x00405CB0, &Abstract_Save);
+    Patch_Jump(0x00405D10, &Abstract_Load);
     /**
      *  Removes the branch from AbstractClass::Abstract_Save which clears IsDirty.
      */
@@ -269,13 +337,13 @@ void Extension_Hooks()
     SuperClassExtension_Hooks();
     SuperWeaponTypeClassExtension_Hooks();
     VoxelAnimTypeClassExtension_Hooks();
-    AnimClassExtension_Hooks();
-    AnimTypeClassExtension_Hooks();
+    //AnimClassExtension_Hooks();
+    //AnimTypeClassExtension_Hooks();
 
     ParticleTypeClassExtension_Hooks();
     ParticleSystemClassExtension_Hooks();
     ParticleSystemTypeClassExtension_Hooks();
-    IsometricTileTypeClassExtension_Hooks();
+    //IsometricTileTypeClassExtension_Hooks();
 
     TiberiumClassExtension_Hooks();
 

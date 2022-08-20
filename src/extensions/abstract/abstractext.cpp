@@ -81,6 +81,7 @@ HRESULT AbstractClassExtension::Load(IStream *pStm)
     }
 
     ULONG size = Size_Of();
+    ASSERT_FATAL(size != 0, "Saving a empty extension, what the fuck\n");
     hr = pStm->Read(this, size, nullptr);
     if (FAILED(hr)) {
         return E_FAIL;
@@ -94,7 +95,7 @@ HRESULT AbstractClassExtension::Load(IStream *pStm)
     /**
      *  Request the pointer to the base class be remapped.
      */
-    SWIZZLE_REQUEST_POINTER_REMAP(ThisPtr);
+    //SWIZZLE_REQUEST_POINTER_REMAP(ThisPtr);
 
 #ifndef NDEBUG
     //EXT_DEBUG_INFO("Ext Load: ID 0x%08X Ptr 0x%08X ThisPtr 0x%08X\n", id, this, ThisPtr);
@@ -111,8 +112,11 @@ HRESULT AbstractClassExtension::Load(IStream *pStm)
  */
 HRESULT AbstractClassExtension::Save(IStream *pStm, BOOL fClearDirty)
 {
-    LONG id;
-    SWIZZLE_FETCH_POINTER_ID(this, &id);
+    if (!pStm) {
+        return E_FAIL;
+    }
+
+    ULONG id = (ULONG)this;
     HRESULT hr = pStm->Write(&id, sizeof(id), nullptr);
     if (FAILED(hr)) {
         return E_FAIL;

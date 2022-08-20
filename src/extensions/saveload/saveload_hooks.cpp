@@ -383,9 +383,9 @@ void SaveLoad_Hooks()
         /**
          *  Disable loading and saving in non-release builds.
          */
-        Patch_Jump(0x004B6D96, &_SaveLoad_Disable_Buttons);
-        Patch_Jump(0x0057FF8B, &_NewMenuClass_Process_Disable_Load_Button_Firestorm);
-        Patch_Jump(0x0058004D, &_NewMenuClass_Process_Disable_Load_Button_TiberianSun);
+        //Patch_Jump(0x004B6D96, &_SaveLoad_Disable_Buttons);
+        //Patch_Jump(0x0057FF8B, &_NewMenuClass_Process_Disable_Load_Button_Firestorm);
+        //Patch_Jump(0x0058004D, &_NewMenuClass_Process_Disable_Load_Button_TiberianSun);
     }
 #endif
 

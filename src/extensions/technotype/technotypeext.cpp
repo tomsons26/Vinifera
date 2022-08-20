@@ -115,25 +115,26 @@ HRESULT TechnoTypeClassExtension::Load(IStream *pStm)
      *  We need to reload the "Cameo" key because TechnoTypeClass does
      *  not store the entry value. 
      */
-    const char *ini_name = Name();
-    const char *graphic_name = This()->Graphic_Name();
-
-    char cameo_buffer[32];
-    
-    ArtINI.Get_String(ini_name, "Cameo", "XXICON", cameo_buffer, sizeof(cameo_buffer));
-    if (Wstring(cameo_buffer) != "XXICON") {
-
-        ArtINI.Get_String(graphic_name, "Cameo", "XXICON", cameo_buffer, sizeof(cameo_buffer));
-
-        /**
-         *  Fetch the cameo image surface if it exists.
-         */
-        BSurface *imagesurface = Vinifera_Get_Image_Surface(cameo_buffer);
-        if (imagesurface) {
-            CameoImageSurface = imagesurface;
-        }
-
-    }
+    //const char *ini_name = Name();
+    //const char *graphic_name = This()->Graphic_Name();
+    //
+    //char cameo_buffer[32];
+    //
+    //ArtINI.Get_String(ini_name, "Cameo", "XXICON", cameo_buffer, sizeof(cameo_buffer));
+    //if (Wstring(cameo_buffer) != "XXICON") {
+    //
+    //    ArtINI.Get_String(graphic_name, "Cameo", "XXICON", cameo_buffer, sizeof(cameo_buffer));
+    //
+    //    /**
+    //     *  Fetch the cameo image surface if it exists.
+    //     */
+    //    BSurface *imagesurface = Vinifera_Get_Image_Surface(cameo_buffer);
+    //    if (imagesurface) {
+    //        CameoImageSurface = imagesurface;
+    //    }
+    //
+    //}
+    CameoImageSurface = nullptr;
     
     return hr;
 }

@@ -93,10 +93,11 @@ HRESULT SuperWeaponTypeClassExtension::Load(IStream *pStm)
     /**
      *  Fetch the cameo image surface if it exists.
      */
-    BSurface *imagesurface = Vinifera_Get_Image_Surface(This()->SidebarImage);
-    if (imagesurface) {
-        CameoImageSurface = imagesurface;
-    }
+    //BSurface *imagesurface = Vinifera_Get_Image_Surface(This()->SidebarImage);
+    //if (imagesurface) {
+    //    CameoImageSurface = imagesurface;
+    //}
+	CameoImageSurface = nullptr;
     
     return hr;
 }

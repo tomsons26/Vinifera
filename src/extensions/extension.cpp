@@ -84,6 +84,7 @@
 #include "smudgetypeext.h"
 #include "superext.h"
 #include "supertypeext.h"
+#include "swizzle.h"
 #include "terrainext.h"
 #include "terraintypeext.h"
 #include "tiberiumext.h"
@@ -128,7 +129,7 @@ DynamicVectorClass<WarheadTypeClassExtension *> WarheadTypeExtensions;
 DynamicVectorClass<WaveClassExtension *> WaveExtensions;
 DynamicVectorClass<WeaponTypeClassExtension *> WeaponTypeExtensions;
 
-
+DynamicVectorClass<AbstractClassExtension *> AllExtensions;
 /**
  *  Set_Extension_Pointer
  * 
@@ -173,7 +174,7 @@ static void Clear_Extension_Pointer(const AbstractClass *abstract)
  */
 static const char *Get_Abstract_Name(const AbstractClass *abstract)
 {
-    if (abstract) {
+    if (0) {
         if (Is_Object(abstract)) {
             return reinterpret_cast<const ObjectClass *>(abstract)->Name();
         }
@@ -221,6 +222,7 @@ static const char *Get_Abstract_Name(const AbstractClass *abstract)
         } else if (allow_make) { \
             ext_class_name *ptr = new ext_class_name(abs_ptr); \
             bool added = list.Add(ptr); \
+            AllExtensions.Add(ptr); \
             ASSERT(added); \
             if (added) { \
                 EXT_DEBUG_INFO("%s extension created for \"%s\".\n", #class_name, Get_Abstract_Name(abs_ptr)); \
@@ -240,6 +242,7 @@ static const char *Get_Abstract_Name(const AbstractClass *abstract)
         /*EXT_DEBUG_INFO("EXT_DESTROY... %s %s %s\n", Get_Abstract_Name(abstract_ptr), #class_name, #ext_class_name);*/ \
         ext_class_name *ext_ptr = (ext_class_name *)Get_Extension_Pointer(abstract_ptr); \
         bool removed = list.Delete(ext_ptr); \
+        AllExtensions.Delete(ext_ptr); \
         ASSERT_FATAL_PRINT(removed, "Failed to destroy %s extension \"%s\"!\n", #class_name, Get_Abstract_Name(abstract_ptr)); \
         EXT_DEBUG_INFO("Destroyed %s extension for \"%s\".\n", #class_name, Get_Abstract_Name(abstract_ptr)); \
     }
@@ -252,13 +255,13 @@ static const char *Get_Abstract_Name(const AbstractClass *abstract)
  */
 #define EXT_SAVE(class_name, ext_class_name, list) \
     { \
-        DEBUG_INFO("Saving %s extensions\n", #class_name); \
+        DEBUG_INFO("Saving %d %s extensions\n", list.Count(), #class_name); \
         for (int i = 0; i < list.Count(); ++i) { list[i]->Save(pStm, true); } \
     }
 
 #define EXT_LOAD(class_name, ext_class_name, list) \
     { \
-        DEBUG_INFO("Loading %s extensions\n", #class_name); \
+        DEBUG_INFO("Loading %d %s extensions\n", list.Count(), #class_name); \
         for (int i = 0; i < list.Count(); ++i) { list[i]->Load(pStm); } \
     }
 
@@ -483,7 +486,7 @@ AbstractClassExtension *Fetch_Extension_Internal(const AbstractClass *abstract)
 
     if (!ext_ptr) {
         //if (Wstring(Get_Abstract_Name(abstract)) == Wstring("GASPOT")) { __debugbreak(); }
-        DEBUG_ERROR("Fetch_Extension: Extension for \"%s\" is null!\n", Get_Abstract_Name(abstract));
+        //DEBUG_ERROR("Fetch_Extension: Extension for \"%s\" is null!\n", Get_Abstract_Name(abstract));
         return nullptr;
     }
 
@@ -531,7 +534,7 @@ bool Destroy_Extension_Internal(const AbstractClass *abstract)
 
         case RTTI_AIRCRAFTTYPE:
         {
-            EXT_DESTROY(abstract, AicraftTypeClass, AircraftTypeClassExtension, AircraftTypeExtensions);
+            EXT_DESTROY(abstract, AircraftTypeClass, AircraftTypeClassExtension, AircraftTypeExtensions);
             break;
         }
 
@@ -719,6 +722,7 @@ bool Destroy_Extension_Internal(const AbstractClass *abstract)
  */
 bool Save_Extensions(IStream *pStm)
 {
+    DEBUG_INFO("In Save_Extensions\n");
     ASSERT(pStm != nullptr);
 
     if (!pStm) {
@@ -766,6 +770,7 @@ bool Save_Extensions(IStream *pStm)
  */
 bool Load_Extensions(IStream *pStm)
 {
+    DEBUG_INFO("In Load_Extensions\n");
     ASSERT(pStm != nullptr);
 
     if (!pStm) {

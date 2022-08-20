@@ -94,9 +94,10 @@ T *Find_Or_Make_Extension(const AbstractClass *abstract, bool allow_make = true)
 template<class T>
 T *Fetch_Extension(const AbstractClass *abstract)
 {
-    ASSERT(abstract != nullptr);
-
-    return (T *)Fetch_Extension_Internal(abstract);
+    if (abstract != nullptr) {
+        return (T *)Fetch_Extension_Internal(abstract);
+    }
+    return nullptr;
 }
 
 

@@ -471,6 +471,198 @@ AbstractClassExtension *Find_Or_Make_Extension_Internal(const AbstractClass *abs
     return extptr;
 }
 
+DynamicVectorClass<AbstractClassExtension *> &Find_Or_Make_Extension_List(const AbstractClass *abstract)
+{
+    ASSERT(abstract != nullptr);
+
+    DynamicVectorClass<AbstractClassExtension *> *extptr = nullptr;
+
+    switch (const_cast<AbstractClass *>(abstract)->What_Am_I()) {
+
+    case RTTI_AIRCRAFT:
+    {
+        extptr = (DynamicVectorClass<AbstractClassExtension *> *)&(AircraftExtensions);
+        break;
+    }
+
+    case RTTI_AIRCRAFTTYPE:
+    {
+        extptr = (DynamicVectorClass<AbstractClassExtension *> *) & (AircraftTypeExtensions);
+        break;
+    }
+
+    case RTTI_ANIM:
+    {
+        extptr = (DynamicVectorClass<AbstractClassExtension *> *) &(AnimExtensions);
+        break;
+    }
+
+    case RTTI_ANIMTYPE:
+    {
+        extptr = (DynamicVectorClass<AbstractClassExtension *> *) & (AnimTypeExtensions);
+        break;
+    }
+
+    case RTTI_BUILDING:
+    {
+        extptr = (DynamicVectorClass<AbstractClassExtension *> *) & (BuildingExtensions);
+        break;
+    }
+
+    case RTTI_BUILDINGTYPE:
+    {
+        extptr = (DynamicVectorClass<AbstractClassExtension *> *) & (BuildingTypeExtensions);
+        break;
+    }
+
+    case RTTI_BULLETTYPE:
+    {
+        extptr = (DynamicVectorClass<AbstractClassExtension *> *) & (BulletTypeExtensions);
+        break;
+    }
+
+    case RTTI_CAMPAIGN:
+    {
+        extptr = (DynamicVectorClass<AbstractClassExtension *> *) & (CampaignExtensions);
+        break;
+    }
+
+    case RTTI_SIDE:
+    {
+        extptr = (DynamicVectorClass<AbstractClassExtension *> *) & (SideExtensions);
+        break;
+    }
+
+    case RTTI_HOUSE:
+    {
+        extptr = (DynamicVectorClass<AbstractClassExtension *> *) & (HouseExtensions);
+        break;
+    }
+
+    case RTTI_HOUSETYPE:
+    {
+        extptr = (DynamicVectorClass<AbstractClassExtension *> *) & (HouseTypeExtensions);
+        break;
+    }
+
+    case RTTI_INFANTRY:
+    {
+        extptr = (DynamicVectorClass<AbstractClassExtension *> *) & (InfantryExtensions);
+        break;
+    }
+
+    case RTTI_INFANTRYTYPE:
+    {
+        extptr = (DynamicVectorClass<AbstractClassExtension *> *) & (InfantryTypeExtensions);
+        break;
+    }
+
+    case RTTI_ISOTILETYPE:
+    {
+        extptr = (DynamicVectorClass<AbstractClassExtension *> *) & (IsometricTileTypeExtensions);
+        break;
+    }
+
+    case RTTI_OVERLAYTYPE:
+    {
+        extptr = (DynamicVectorClass<AbstractClassExtension *> *) & (OverlayTypeExtensions);
+        break;
+    }
+
+    case RTTI_PARTICLESYSTEMTYPE:
+    {
+        extptr = (DynamicVectorClass<AbstractClassExtension *> *) & (ParticleSystemTypeExtensions);
+        break;
+    }
+
+    case RTTI_PARTICLETYPE:
+    {
+        extptr = (DynamicVectorClass<AbstractClassExtension *> *) & (ParticleTypeExtensions);
+        break;
+    }
+
+    case RTTI_SMUDGETYPE:
+    {
+        extptr = (DynamicVectorClass<AbstractClassExtension *> *) & (SmudgeTypeExtensions);
+        break;
+    }
+
+    case RTTI_SUPERWEAPON:
+    {
+        extptr = (DynamicVectorClass<AbstractClassExtension *> *) & (SuperExtensions);
+        break;
+    }
+
+    case RTTI_SUPERWEAPONTYPE:
+    {
+        extptr = (DynamicVectorClass<AbstractClassExtension *> *) & (SuperWeaponTypeExtensions);
+        break;
+    }
+
+    case RTTI_TERRAIN:
+    {
+        extptr = (DynamicVectorClass<AbstractClassExtension *> *) & (TerrainExtensions);
+        break;
+    }
+
+    case RTTI_TERRAINTYPE:
+    {
+        extptr = (DynamicVectorClass<AbstractClassExtension *> *) & (TerrainTypeExtensions);
+        break;
+    }
+
+    case RTTI_TIBERIUM:
+    {
+        extptr = (DynamicVectorClass<AbstractClassExtension *> *) & (TiberiumExtensions);
+        break;
+    }
+
+    case RTTI_UNIT:
+    {
+        extptr = (DynamicVectorClass<AbstractClassExtension *> *) & (UnitExtensions);
+        break;
+    }
+
+    case RTTI_UNITTYPE:
+    {
+        extptr = (DynamicVectorClass<AbstractClassExtension *> *) & (UnitTypeExtensions);
+        break;
+    }
+
+    case RTTI_VOXELANIMTYPE:
+    {
+        extptr = (DynamicVectorClass<AbstractClassExtension *> *) & (VoxelAnimTypeExtensions);
+        break;
+    }
+
+    case RTTI_WARHEADTYPE:
+    {
+        extptr = (DynamicVectorClass<AbstractClassExtension *> *) & (WarheadTypeExtensions);
+        break;
+    }
+
+    case RTTI_WAVE:
+    {
+        extptr = (DynamicVectorClass<AbstractClassExtension *> *) & (WaveExtensions);
+        break;
+    }
+
+    case RTTI_WEAPONTYPE:
+    {
+        extptr = (DynamicVectorClass<AbstractClassExtension *> *) & (WeaponTypeExtensions);
+        break;
+    }
+
+    default:
+        extptr = nullptr;
+        DEBUG_ERROR("Find_Or_Make_Extension: No extension list for \"%s\" implemented!\n", Name_From_RTTI((RTTIType)abstract->What_Am_I()));
+        break;
+
+    };
+
+    return *extptr;
+}
+
 
 /**
  *  x

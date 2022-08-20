@@ -31,6 +31,7 @@
 #include "tibsun_globals.h"
 #include "swizzle.h"
 #include "asserthandler.h"
+#include "debughandler.h"
 
 
 /**
@@ -76,17 +77,21 @@ HRESULT AbstractClassExtension::Load(IStream *pStm)
 {
     LONG id;
     HRESULT hr = pStm->Read(&id, sizeof(id), nullptr);
+    DEBUG_INFO("AbstractClassExtension Read ID 0x%08X\n", id);
     if (FAILED(hr)) {
         return E_FAIL;
     }
 
+    AbstractClass *thisptr = ThisPtr;
+
     ULONG size = Size_Of();
-    ASSERT_FATAL(size != 0, "Saving a empty extension, what the fuck\n");
+    ASSERT_FATAL(size != 0, "Loading a empty extension, what the fuck\n");
     hr = pStm->Read(this, size, nullptr);
     if (FAILED(hr)) {
         return E_FAIL;
     }
 
+    ThisPtr = thisptr;
     /**
      *  Announce ourself to the swizzle manager.
      */
@@ -95,7 +100,7 @@ HRESULT AbstractClassExtension::Load(IStream *pStm)
     /**
      *  Request the pointer to the base class be remapped.
      */
-    //SWIZZLE_REQUEST_POINTER_REMAP(ThisPtr);
+    //SWIZZLE_REQUEST_POINTER_REMAP(ThisPtr); //fails to remap
 
 #ifndef NDEBUG
     //EXT_DEBUG_INFO("Ext Load: ID 0x%08X Ptr 0x%08X ThisPtr 0x%08X\n", id, this, ThisPtr);
@@ -113,16 +118,19 @@ HRESULT AbstractClassExtension::Load(IStream *pStm)
 HRESULT AbstractClassExtension::Save(IStream *pStm, BOOL fClearDirty)
 {
     if (!pStm) {
-        return E_FAIL;
+        return E_POINTER;
     }
 
-    ULONG id = (ULONG)this;
+    LONG id;
+    SWIZZLE_FETCH_POINTER_ID(this, &id);
     HRESULT hr = pStm->Write(&id, sizeof(id), nullptr);
+    DEBUG_INFO("AbstractClassExtension Written ID 0x%08X\n", id);
     if (FAILED(hr)) {
         return E_FAIL;
     }
 
     ULONG size = Size_Of();
+    ASSERT_FATAL(size != 0, "Saving a empty extension, what the fuck\n");
     hr = pStm->Write(this, size, nullptr);
     if (FAILED(hr)) {
         return E_FAIL;

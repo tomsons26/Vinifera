@@ -158,6 +158,8 @@ DECLARE_PATCH(_AbstractClass_Constructor_Extension)
  */
 DECLARE_PATCH(_AbstractClass_IsDirty_Return_True)
 {
+    DEBUG_WARNING("IsDirty was called!\n");
+
     _asm { xor eax, eax }
     _asm { mov al, 1 }
     _asm { ret 4 }
@@ -168,29 +170,37 @@ bool &IsFS = Make_Global<bool>(0x007E497C);
 class AbstractClassExtension;
 extern DynamicVectorClass<AbstractClassExtension *> AllExtensions;
 
+extern DynamicVectorClass<AbstractClassExtension *> &Find_Or_Make_Extension_List(const AbstractClass *abstract);
+
+// use index remapping for extensions opposed to swizzling which doesn't work for some reason
+#define USE_ID_REMAPPING 1
+
 HRESULT STDMETHODCALLTYPE Abstract_Save(AbstractClass *This, IStream *pStm, BOOL fClearDirty)
 {
     if (!pStm) {
         return E_POINTER;
     }
 
-    ULONG id = (ULONG)This;
+    LONG id;
+    SWIZZLE_FETCH_POINTER_ID(This, &id);
     HRESULT hr = pStm->Write(&id, sizeof(id), nullptr);
     if (hr < 0) {
         return hr;
     }
 
     hr = pStm->Write(This, This->Size_Of(false), nullptr);
-
+#if USE_ID_REMAPPING
     uintptr_t extension_address = (*(unsigned int *)((char *)This + 0x10));
     uintptr_t extension_id = -1;
     if (extension_address != 0) {
-        extension_id = (uintptr_t)AllExtensions.ID((AbstractClassExtension *)extension_address);
+        extension_id = (uintptr_t)Find_Or_Make_Extension_List(This).ID((AbstractClassExtension *)extension_address);
         DEBUG_INFO("Saving Extension %X as ID %d\n", extension_address, extension_id);
     }
     
     hr = pStm->Write(&extension_id, sizeof(extension_id), nullptr);
+#else
 
+#endif
     return hr;
 }
 
@@ -200,12 +210,12 @@ HRESULT STDMETHODCALLTYPE Abstract_Load(AbstractClass *This, IStream *pStm)
         return E_POINTER;
     }
 
-    ULONG id;
+    LONG id;
     HRESULT hr = pStm->Read(&id, sizeof(ULONG), nullptr);
     if (hr < 0) {
         return hr;
     }
-    SwizzleManager.Here_I_Am((LONG)id, This);
+    SWIZZLE_HERE_I_AM(id, This);
 
     int heap_id = This->HeapID;
 
@@ -213,19 +223,37 @@ HRESULT STDMETHODCALLTYPE Abstract_Load(AbstractClass *This, IStream *pStm)
 
     This->HeapID = heap_id;
 
+    struct AbstractExtension
+    {
+        void *vptr;
+        void *IRTTI;
+        int ID;
+        int HeapID;
+        AbstractClassExtension *Extension;
+    };
 
+#if USE_ID_REMAPPING
     uintptr_t extension_address = 0;
     uintptr_t extension_id = -1;
 
     hr = pStm->Read(&extension_id, sizeof(extension_id), nullptr);
 
     if (extension_id != -1) {
-        extension_address = (uintptr_t)AllExtensions[extension_id];
+        DynamicVectorClass<AbstractClassExtension *> &vc = Find_Or_Make_Extension_List(This);
+        if (extension_id < vc.Count()) {
+            extension_address = (uintptr_t)vc[extension_id];
+        } else {
+            DEBUG_ERROR("Loading Extension ID %d larger than vector entry count %d!!!\n", extension_id, vc.Count());
+        }
+        
+
         DEBUG_INFO("Loading Extension %X from ID %d\n", extension_address, extension_id);
     }
 
-    (*(uintptr_t *)((char *)This + 0x10)) = extension_address;
-
+    ((AbstractExtension *)This)->Extension = (AbstractClassExtension*)extension_address;
+#else
+    SWIZZLE_REQUEST_POINTER_REMAP(((AbstractExtension *)This)->Extension);
+#endif
     return hr;
 }
 
@@ -337,13 +365,13 @@ void Extension_Hooks()
     SuperClassExtension_Hooks();
     SuperWeaponTypeClassExtension_Hooks();
     VoxelAnimTypeClassExtension_Hooks();
-    //AnimClassExtension_Hooks();
+    //AnimClassExtension_Hooks(); crashes
     //AnimTypeClassExtension_Hooks();
 
     ParticleTypeClassExtension_Hooks();
     ParticleSystemClassExtension_Hooks();
     ParticleSystemTypeClassExtension_Hooks();
-    //IsometricTileTypeClassExtension_Hooks();
+    //IsometricTileTypeClassExtension_Hooks(); //corrupts memory
 
     TiberiumClassExtension_Hooks();
 

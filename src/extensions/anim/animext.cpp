@@ -30,6 +30,7 @@
 #include "wwcrc.h"
 #include "asserthandler.h"
 #include "debughandler.h"
+#include "objectext.h"
 
 
 /**

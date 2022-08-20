@@ -305,21 +305,25 @@ DECLARE_PATCH(_LoadOptionsClass_Read_File_Remove_Older_Prefixing)
  */
 DECLARE_PATCH(_SwizzleManagerClass_Process_Tables_Remap_Failed_Error)
 {
-    static int old_ptr;
-    _asm { mov eax, [edi+0x4] }
-    _asm { mov old_ptr, eax }
-    //GET_REGISTER_STATIC(int, old_ptr, edi);
+    struct SwizzlePointerStruct
+    {
+        LONG ID;
+        void *Pointer;
+    };
 
-    DEBUG_ERROR("Swizzle Manager - Failed to re-map pointer! (old_ptr = 0x%08X)!\n", old_ptr);
+    GET_REGISTER_STATIC(SwizzlePointerStruct *, edi_ptr, edi);
+    GET_REGISTER_STATIC(SwizzlePointerStruct *, ecx_ptr, ecx);
+
+    DEBUG_ERROR("Swizzle Manager - Failed to re-map pointer! (edi_ptr = ID 0x%08X Pointer 0x%08X) (ecx_ptr = ID 0x%08X Pointer 0x%08X)!\n", edi_ptr->ID, edi_ptr->Pointer, ecx_ptr->ID, ecx_ptr->Pointer);
 
     ShowCursor(TRUE);
 
     static char buffer[256];
-    std::snprintf(buffer, sizeof(buffer), "SwizzleManagerClass::Process_Tables()\n\nFailed to re-map pointer! (old_ptr = 0x%08X)!", old_ptr);
+    std::snprintf(buffer, sizeof(buffer), "SwizzleManagerClass::Process_Tables()\n\nFailed to re-map pointer! (edi_ptr = ID 0x%08X Pointer 0x%08X) (ecx_ptr = ID 0x%08X Pointer 0x%08X)!\n", edi_ptr->ID, edi_ptr->Pointer, ecx_ptr->ID, ecx_ptr->Pointer);
     MessageBoxA(MainWindow, buffer, "Vinifera", MB_OK|MB_ICONEXCLAMATION);
 
     Vinifera_Generate_Mini_Dump();
-    Fatal("Swizzle Manager - Failed to re-map pointer! (old_ptr = 0x%08X)!\n", old_ptr);
+    Fatal("Swizzle Manager - Failed to re-map pointer! (edi_ptr = ID 0x%08X Pointer 0x%08X) (ecx_ptr = ID 0x%08X Pointer 0x%08X)!\n", edi_ptr->ID, edi_ptr->Pointer, ecx_ptr->ID, ecx_ptr->Pointer);
 
     /**
      *  We won't ever get here, but its here just for clean analysis.

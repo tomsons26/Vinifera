@@ -156,7 +156,7 @@ void Extension_Hooks()
      */
     cmdline = GetCommandLineA();
     bool no_class_extensions = (std::strstr(cmdline, "-NO_CLASS_EXT") != nullptr);
-    if (!no_class_extensions) {
+    if (0) {
 
         /**
          *  All game class extensions here.

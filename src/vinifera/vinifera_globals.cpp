@@ -30,7 +30,7 @@
 #include "vinifera_globals.h"
 
 
-bool Vinifera_DeveloperMode = false;
+bool Vinifera_DeveloperMode = true;
 
 bool Vinifera_PrintFileErrors = true;
 bool Vinifera_FatalFileErrors = false;

@@ -38,6 +38,7 @@
 #include "cncnet4_hooks.h"
 #include "cncnet5_hooks.h"
 
+extern void NewSwizzle_Hooks();
 
 void Setup_Hooks()
 {
@@ -47,6 +48,7 @@ void Setup_Hooks()
     Debug_Hooks();
     Vinifera_Hooks();
     Extension_Hooks();
+    NewSwizzle_Hooks();
 
     CnCNet4_Hooks();
     CnCNet5_Hooks();

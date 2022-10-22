@@ -54,7 +54,16 @@
 #include "asserthandler.h"
 #include "debughandler.h"
 
+#include "bsurface.h"
+#include "drawshape.h"
+#include "language.h"
+#include "mouse.h"
+#include "sidebar.h"
+#include "spritecollection.h"
+#include "tibsun_functions.h"
+#include "vox.h"
 
+int InstanceCount = 0;
 /**
  *  Class constructor.
  *  
@@ -73,6 +82,7 @@ TacticalExtension::TacticalExtension(const Tactical *this_ptr) :
     //if (this_ptr) EXT_DEBUG_TRACE("TacticalExtension::TacticalExtension - Name: %s (0x%08X)\n", Name(), (uintptr_t)(This()));
 
     TacticalMapExtension = this;
+    InstanceCount++;
 }
 
 
@@ -100,6 +110,7 @@ TacticalExtension::~TacticalExtension()
     //EXT_DEBUG_TRACE("TacticalExtension::~TacticalExtension - Name: %s (0x%08X)\n", Name(), (uintptr_t)(This()));
 
     TacticalMapExtension = nullptr;
+    InstanceCount--;
 }
 
 
@@ -500,7 +511,296 @@ void TacticalExtension::Draw_Information_Text()
         &Point2D(text_rect.X, text_rect.Y), text_color, COLOR_TBLACK, style);
 }
 
+#define MAX_VISIBLE 8
+enum
+{
+    OBJECT_HEIGHT = 24,				// Pixel height of each buildable object.
+    OBJECT_WIDTH = 32,				// Pixel width of each buildable object.
+    RESFACTOR = 2,
+    BUTTON_SELECT = 2220,
 
+};
+
+bool Needs_Redrawing(SuperClass *sup)
+{
+    if (sup->Class->IsUseChargeDrain) {
+        return true;
+    }
+    return sup->IsReady == 0;
+}
+
+const ShapeFileStruct *&RechargeClockShape = Make_Global<const ShapeFileStruct *>(0x0080B6D0);
+const ShapeFileStruct *&ClockShape = Make_Global<const ShapeFileStruct *>(0x0080C23C);
+
+DEFINE_IMPLEMENTATION(void Print_Cameo_Text(char *string, Point2D &a2, Rect &rect1, int max_width), 0x005F66E0);
+
+class SuperBGadgetClass : public GadgetClass {
+public:
+    SuperBGadgetClass() : GadgetClass(0, 0, 1, 1, LEFTUP) {}
+protected:
+    virtual bool Draw_Me(bool forced = false) override;
+    virtual bool Action(unsigned flags, KeyNumType &key) override;
+};
+
+//for debugging positions
+bool SuperBGadgetClass::Draw_Me(bool forced)
+{
+    Rect rect;
+    rect.X = X; // Width of Options tab, so we draw from there.
+    rect.Y = Y;
+    rect.Width = Width;
+    rect.Height = Height; // Tab bar height
+    CompositeSurface->Draw_Rect(rect, DSurface::RGB_To_Pixel(255,0,255));
+
+    return GadgetClass::Draw_Me(forced);
+}
+
+bool SuperBGadgetClass::Action(unsigned, KeyNumType &)
+{
+    DEBUG_INFO("SuperBGadgetClass Action\n");
+    Map.Override_Mouse_Shape(MOUSE_NORMAL, false);
+    return(true);
+}
+
+SuperBGadgetClass SuperBackground;
+
+class SuperSelectClass : public ControlClass
+{
+public:
+    SuperSelectClass();
+    SuperSelectClass(NoInitClass const &x) : ControlClass(x) {};
+
+    virtual bool Draw_Me(bool forced = false) override;
+    virtual bool Action(unsigned flags, KeyNumType &key) override;
+
+    void Set_Owner(int index);
+
+public:
+    int Index;
+};
+
+DynamicVectorClass<int> SuperIndexes;
+
+#include "event.h"
+SuperSelectClass SelectButton[MAX_VISIBLE];
+
+SuperSelectClass::SuperSelectClass() :
+    ControlClass(0, 0, 0, (OBJECT_WIDTH - 1) *RESFACTOR, (OBJECT_HEIGHT - 1) *RESFACTOR, LEFTPRESS | RIGHTPRESS | LEFTUP),
+    Index(0)
+{
+}
+//for debugging positions
+bool SuperSelectClass::Draw_Me(bool forced)
+{
+    //Rect rect;
+    //rect.X = X; // Width of Options tab, so we draw from there.
+    //rect.Y = Y;
+    //rect.Width = Width;
+    //rect.Height = Height; // Tab bar height
+    //CompositeSurface->Draw_Rect(rect, 0);
+
+    return ControlClass::Draw_Me(forced);
+}
+int IgnoreMouse;
+
+bool SuperSelectClass::Action(unsigned flags, KeyNumType &key)
+{
+    DEBUG_INFO("Super Select Action\n");
+    int index = Index;
+    int oid = SuperIndexes[index];
+
+    SpecialWeaponType spc = SPECIAL_NONE;
+
+    Map.Override_Mouse_Shape(MOUSE_NORMAL);
+
+    if (index < SuperIndexes.Count()) {
+            spc = SpecialWeaponType(oid);
+            DEBUG_INFO("Super Select Action Index Check\n");
+    }
+
+    if (spc != SPECIAL_NONE) {
+        
+        if (flags & LEFTUP) {
+            DEBUG_INFO("Super Select Action Index LEFTUP Frame %d\n", Frame);
+            //Map.Help_Text(SpecialWeaponHelp[spc]);
+            flags &= ~LEFTUP;
+            IgnoreMouse = Frame;
+        }
+
+        if (flags & RIGHTPRESS) {
+            DEBUG_INFO("Super Select Action Index RIGHTPRESS Frame %d\n", Frame);
+            Map.TargettingType = SPECIAL_NONE;
+            IgnoreMouse = Frame;
+        }
+
+        if (flags & LEFTPRESS) {
+            DEBUG_INFO("Super Select Action Index LEFTPRESS Frame %d\n", Frame);
+            if ((unsigned)spc < SuperWeaponTypes.Count()) {
+                SuperClass *super = PlayerPtr->SuperWeapon[spc];
+
+                if (super->Is_Ready()) {
+                    if (!super->Class->Action) {
+                        Cell cell = 0;
+                        OutList.Add(EventClass(PlayerPtr->ID, EventType::SPECIAL_PLACE, super->Class->Type, &cell));
+                    }
+
+                    Map.TargettingType = spc;
+                    Unselect_All();
+                    Speak(VOX_SELECT_TARGET);
+                } else {
+                    PlayerPtr->SuperWeapon[spc]->Impatient_Click();
+                }
+            }
+            IgnoreMouse = Frame + 4;
+        }
+       
+    }
+
+    key = KN_NONE;
+    ControlClass::Action(flags, key);
+    return(true);
+}
+
+void SuperSelectClass::Set_Owner(int index)
+{
+    Index = index;
+}
+
+int SX = 5;
+int SY = 30;
+
+
+bool once = false;
+void Draw_Superweapons()
+{
+   // SuperIndexes.Clear();
+
+    if (!once){
+
+
+        SuperBackground.Set_Position(SX, SY);
+        SuperBackground.Set_Size(OBJECT_WIDTH * RESFACTOR, OBJECT_HEIGHT * RESFACTOR * 8);
+        SuperBackground.Zap();
+        Map.Add_A_Button(SuperBackground);
+
+        //Activate
+        for (int index = 0; index < MAX_VISIBLE; index++) {
+            SelectButton[index].Zap();
+            Map.Add_A_Button(SelectButton[index]);
+        }
+
+        //Init_IO
+        for (int index = 0; index < MAX_VISIBLE; index++) {
+            SuperSelectClass &g = SelectButton[index];
+            g.ID = BUTTON_SELECT;
+            g.X = SX;
+            g.Y = ((OBJECT_HEIGHT * index) * RESFACTOR) + SY;
+            g.Width = OBJECT_WIDTH * RESFACTOR;
+            g.Height = OBJECT_HEIGHT * RESFACTOR;
+            g.Set_Owner(index);
+        }
+
+        for (int j = 0; j < 75; ++j) {
+            auto &b = Map.Column[1].Buildables[j];
+            if (b.BuildableType == RTTI_SPECIAL) {
+                SuperIndexes.Add(b.BuildableID);
+            }
+        }
+
+
+        once = true;
+    }
+
+    for (int i = 0; i < SuperIndexes.Count(); ++i) {
+        if (i >= 8) {
+            break;
+        }
+
+        int index = SuperIndexes[i];
+        if (index < SuperWeaponTypes.Count()) {
+            SuperClass *sup = PlayerPtr->SuperWeapon[index];
+
+
+
+            auto *shape = sup->Class->SidebarIcon;
+            BSurface *image_surface = nullptr;
+            auto *supertypeext = Extension::Fetch<SuperWeaponTypeClassExtension>(sup->Class);
+            if (supertypeext->CameoImageSurface) {
+                image_surface = supertypeext->CameoImageSurface;
+            }
+
+            bool not_redrawing = Needs_Redrawing(sup) == 0;
+            bool  isready = sup->Is_Ready();
+            const char *statestr = sup->Ready_String();
+            int animstage = sup->Anim_Stage();
+
+            char *string = sup->Class->FullName;
+
+            Point2D pt(SelectButton[i].X, SelectButton[i].Y);
+            Rect rect;
+            rect.X = 0;
+            rect.Y = 0;//SidebarRect.Y;
+            rect.Width = SidebarRect.Width;
+            rect.Height = SidebarRect.Height;
+
+            /**
+             *  Draw the cameo pcx image.
+             */
+            if (image_surface) {
+                Rect pcxrect;
+                pcxrect.X = rect.X + pt.X;
+                pcxrect.Y = rect.Y + pt.Y;
+                pcxrect.Width = image_surface->Get_Width();
+                pcxrect.Height = image_surface->Get_Height();
+
+                SpriteCollection.Draw(pcxrect, *CompositeSurface, *image_surface);
+            } else {
+                CC_Draw_Shape(CompositeSurface, CameoDrawer, shape, 0, &pt, &rect);
+            }
+
+            if (string) {
+                auto *sbs = SidebarSurface;
+                SidebarSurface = CompositeSurface;
+                Point2D a2;
+                a2.Y = pt.Y + 41;
+                a2.X = pt.X;
+                Print_Cameo_Text(string, a2, rect, 62);
+                SidebarSurface = sbs;
+            }
+
+
+            if (statestr) {
+
+                Point2D spt = pt;
+                spt.X = pt.X + 30;
+                spt.Y = pt.Y + 2;
+                ColorScheme *color = ColorScheme::As_Pointer("LightBlue", 1);
+                Fancy_Text_Print(statestr, CompositeSurface, &rect, &spt, color, 0, TPF_CENTER | TPF_FULLSHADOW | TPF_8POINT);
+            }
+
+            if (!not_redrawing) {
+                if (isready) {
+                    CC_Draw_Shape(CompositeSurface, SidebarDrawer, RechargeClockShape, animstage + 1, &pt, &rect, (SHAPE_400 | SHAPE_TRANS50));
+                } else {
+                    CC_Draw_Shape(CompositeSurface, SidebarDrawer, ClockShape, animstage + 1, &pt, &rect, (SHAPE_400 | SHAPE_TRANS50));
+                }
+
+            }
+
+        } else {
+            break;
+        }
+
+    }
+
+
+    //Deactivate
+    //for (int i = 0; i < MAX_VISIBLE; ++i) {
+    //    Map.Remove_A_Button(SelectButton[i]);
+    //}
+
+    //SuperIndexes.Clear();
+}
 /**
  *  For drawing any new post-effects/systems.
  * 
@@ -521,6 +821,10 @@ void TacticalExtension::Render_Post()
      *  Draw any overlay text.
      */
     Draw_Super_Timers();
+
+    if (GameActive && Frame > 2) {
+        Draw_Superweapons();
+    }
 }
 
 

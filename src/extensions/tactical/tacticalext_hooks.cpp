@@ -42,6 +42,7 @@
 
 #include "hooker.h"
 #include "hooker_macros.h"
+#include "scroll.h"
 
 
 /**
@@ -347,6 +348,78 @@ original_code:
     JMP(0x00611BE4);
 }
 
+extern int IgnoreMouse;
+class Dummy
+{
+    public:
+        void Mouse_Right_Press(HWND hWnd, UINT &Msg, WPARAM &wParam, LPARAM &lParam);
+        void Mouse_Right_Press_Wrapper(HWND hWnd, UINT &Msg, WPARAM &wParam, LPARAM &lParam);
+};
+DEFINE_IMPLEMENTATION(void Dummy::Mouse_Right_Press(HWND hWnd, UINT &Msg, WPARAM &wParam, LPARAM &lParam), 0x005E9300);
+class SuperBGadgetClass : public GadgetClass {
+public:
+    SuperBGadgetClass() : GadgetClass(0, 0, 1, 1, LEFTUP) {}
+protected:
+    virtual bool Draw_Me(bool forced = false) override;
+    virtual bool Action(unsigned flags, KeyNumType &key) override;
+};
+
+extern class SuperBGadgetClass SuperBackground;
+#include "windowsx.h"
+void Dummy::Mouse_Right_Press_Wrapper(HWND hWnd, UINT &Msg, WPARAM &wParam, LPARAM &lParam)
+{
+#if 1
+    int X = GET_X_LPARAM(lParam);
+    int Y = GET_Y_LPARAM(lParam);
+    bool do_call = true;
+
+    if (Frame + 4 == IgnoreMouse) {
+        DEBUG_INFO("WM Handler Doing Call 0\n");
+        Mouse_Right_Press(hWnd, Msg, wParam, lParam);
+        return;
+    }
+    else if (Frame < IgnoreMouse) {
+        return;
+    }
+
+    switch(Msg)
+    {
+        case WM_LBUTTONDOWN:
+        case WM_LBUTTONUP:
+        case WM_RBUTTONDOWN:
+        case WM_RBUTTONUP:
+        case WM_CAPTURECHANGED:
+            //if (GScreenClass::Buttons->Extract_Gadget_At_Mouse(X, Y)) {
+            //    DEBUG_INFO("Skipping mouse code\n");
+            //    do_call = false;
+            //}
+            DEBUG_INFO("WM Handler Frame %d\n", Frame);
+            break;
+        default:
+            break;
+    }
+    if (do_call) {
+        Mouse_Right_Press(hWnd, Msg, wParam, lParam);
+        IgnoreMouse = 0;
+    }
+#endif
+#if 0
+    if (IgnoreMouse == 2) {
+        Mouse_Right_Press(hwnd, message, wParam, lParam);
+        DEBUG_INFO("WM Handler IgnoreMouse == 2 Frame %d\n", Frame);
+    }
+
+    if (IgnoreMouse == 0) {
+        Mouse_Right_Press(hwnd, message, wParam, lParam);
+    }
+
+    if (IgnoreMouse != 0) {
+        DEBUG_INFO("WM Handler IgnoreMouse != 0 Frame %d\n", Frame);
+        IgnoreMouse--;
+    }
+#endif
+    
+}
 
 /**
  *  Main function for patching the hooks.
@@ -374,4 +447,6 @@ void TacticalExtension_Hooks()
      */
     Patch_Dword(0x006171C8+1, (TPF_CENTER|TPF_EFNT|TPF_FULLSHADOW));
     Patch_Jump(0x00616FDA, &_Tactical_Draw_Waypoint_Paths_Text_Color_Patch);
+
+    Patch_Call(0x00685C30, &Dummy::Mouse_Right_Press_Wrapper);
 }

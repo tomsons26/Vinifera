@@ -125,7 +125,7 @@ original_code:
     _asm { mov eax, 0x00405B90 } // AbstractClass::~AbstractClass()
     _asm { call eax }
 
-    JMP(0x0060D881);
+    JMP(0x0061802F);
 }
 
 

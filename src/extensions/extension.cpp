@@ -310,6 +310,11 @@ static EXT_CLASS * Extension_Make(const BASE_CLASS *abstract_ptr)
 template<class BASE_CLASS, class EXT_CLASS>
 static bool Extension_Destroy(const BASE_CLASS *abstract_ptr)
 {
+    if (!abstract_ptr)
+    {
+        EXT_DEBUG_WARNING("Extension_Destroy: \"%s\" abstract pointer is null!\n", Extension::Private::Get_TypeID_Name<BASE_CLASS>().c_str());
+        return true;
+    }
     //EXT_DEBUG_INFO("Extension_Destroy... %s %s %s\n", Extension_Get_Abstract_Name(abstract_ptr), Extension::Private::Get_TypeID_Name<BASE_CLASS>().c_str(), Extension::Private::Get_TypeID_Name<EXT_CLASS>().c_str());
 
     EXT_CLASS *ext_ptr = reinterpret_cast<EXT_CLASS *>(Extension_Get_Abstract_Pointer(abstract_ptr));
@@ -1028,7 +1033,7 @@ bool Extension::Save(IStream *pStm)
     return true;
 }
 
-
+extern int InstanceCount;
 /**
  *  Load all the extension class data from the stream.
  * 
@@ -1122,6 +1127,9 @@ bool Extension::Load(IStream *pStm)
     if (FAILED(SessionExtension->Load(pStm))) { return false; }
     DEBUG_INFO("Loaded \"%s\" extension.\n", SessionExtension->Name());
     SessionExtension->Assign_This(&Session);
+
+
+    DEBUG_INFO("TacticalExt instance count %d\n", InstanceCount);
 
     DEBUG_INFO("Extension::Load(exit)\n");
 

@@ -145,4 +145,10 @@ void TiberiumClassExtension_Init()
     Patch_Jump(0x00644A20, &_TiberiumClass_Constructor_Patch);
     Patch_Jump(0x00644A93, &_TiberiumClass_Destructor_Patch);
     Patch_Jump(0x00644E74, &_TiberiumClass_Read_INI_Patch);
+
+    Patch_Jump(0x00646080, &ViniferaTiberiumClass::Grow);
+    Patch_Jump(0x006463D0, &ViniferaTiberiumClass::Init_Growth_Data);
+    Patch_Jump(0x00646510, &ViniferaTiberiumClass::Recalc_Growth_Data);
+    Patch_Jump(0x00646680, &ViniferaTiberiumClass::Delete_Growth_Data);
+    Patch_Jump(0x00646710, &ViniferaTiberiumClass::Queue_Growth_At_Cell);
 }
